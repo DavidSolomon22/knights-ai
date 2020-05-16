@@ -51,10 +51,10 @@ def drawChessBoard():
     chessboard=pygame.display.set_mode((surface_size,surface_size))
     colors = [(205, 133, 63), (255, 235, 205)]
 
-    white_pawn=pygame.image.load("pawn.png")
+    white_pawn=pygame.image.load("Resources/pawn.png")
     white_pawn_center=(sq-white_pawn.get_width()) //2
 
-    black_pawn=pygame.image.load("black1.png")
+    black_pawn=pygame.image.load("Resources/black1.png")
     black_pawn_center=(sq-black_pawn.get_width()) //2
 
     for (x, y) in enumerate(whity):
