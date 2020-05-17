@@ -1,6 +1,5 @@
 import pygame
 
-grav = 0.0001
 
 
 class Pawn:
@@ -34,6 +33,12 @@ class Pawn:
         self.pos = pos
 
 
+def showPossibleMove(sprite):
+    pos=list(sprite.pos)
+    pos[0]=262
+
+
+
 def drawChessBoard():
     whity = [6, 6, 6, 6, 6, 6, 6, 6]
     whity2 = [7, 7, 7, 7, 7, 7, 7, 7]
@@ -41,15 +46,14 @@ def drawChessBoard():
     blacks2 = [1, 1, 1, 1, 1, 1, 1, 1]
     pygame.init()
 
-    actual_positon = (0, 0)
-    actual_sprite = Pawn
-    isTouch = False
-    ticks = 0
-    sprites = []
-    size = 8
-    surface_size = 480
-    sq = surface_size // size
-    chessboard = pygame.display.set_mode((surface_size, surface_size))
+    actual_positon=(0,0)
+    actual_sprite=Pawn('',0)
+    ticks=0
+    sprites=[]
+    size=8
+    surface_size=480
+    sq=surface_size //size
+    chessboard=pygame.display.set_mode((surface_size,surface_size))
     colors = [(205, 133, 63), (255, 235, 205)]
 
     white_pawn = pygame.image.load("Resources/pawn.png")
@@ -80,32 +84,38 @@ def drawChessBoard():
                 pygame.quit()
 
         if event.type == pygame.MOUSEBUTTONDOWN:
-            pos = event.dict["pos"]
-            actual_positon = pos
-            if isTouch:
-                if ticks == 2:
-                    ticks == 0
-                    actual_sprite == None
-                else:
-                    print("Aktualny obiekt" + str(actual_sprite))
-                    print(pos)
-                    actual_sprite.move(pos)
-                    ticks = ticks + 1
-            else:
-                print("Brak obiektu")
+            pos=event.dict["pos"]
+            actual_positon=pos
+            print(pos)
+
 
         if event.type == pygame.MOUSEBUTTONUP:
-            print("up")
-            isTouch = False
+            print('up'+str(actual_sprite))
+            #actual_sprite.move(actual_positon)
+            if(actual_sprite.pos!=0):
+                print(actual_sprite.pos)
+                cord=list(actual_sprite.pos)
+                cordx=cord[0]
+                cordy=cord[1]
+                for sprite in sprites:
+                    if(sprite.contains((cordx-60,cordy))):
+                        print(' pionek po lewej')
+                    if(sprite.contains((cordx+60,cordy))):
+                        print(' pionek po prawej')
+                    if (sprite.contains((cordx,cordy+60))):
+                        print('pionek na dole')
+                    if (sprite.contains((cordx, cordy-60))):
+                        print('pionek na gorze')
+
+
 
         for sprite in sprites:
             if (sprite.contains(actual_positon)):
                 actual_sprite = sprite
-                isTouch = True
-                print('touch')
+                #print('touch'+str(actual_sprite))
                 break
-            else:
-                isTouch = False
+
+
 
         for x in range(size):
             c_index = x % 2
