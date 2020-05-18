@@ -54,11 +54,8 @@ def drawChessboard(width, height, spriteList: pygame.sprite.Group):
     return spriteList
 
 
-def drawChessBoardWithPawns(x, y, screen: pygame.Surface):
+def drawChessBoardWithPawns(screenWidth, screenHeight, screen: pygame.Surface):
     pygame.init()
-
-    screenWidth = x
-    screenHeight = y
 
     # screen = pygame.display.set_mode((screenWidth, screenHeight))
 
@@ -68,13 +65,11 @@ def drawChessBoardWithPawns(x, y, screen: pygame.Surface):
 
     chessPawnsGroup = pygame.sprite.Group()
 
-    chessTilesCreatedTable = drawChessboard(x, y, chessTilesGroup)
+    chessTilesCreatedTable = drawChessboard(screenWidth, screenHeight, chessTilesGroup)
 
     chessTilesCreatedTable.draw(screen)
 
     for index, tile in enumerate(chessTilesCreatedTable):
-        rectangleCenterX = tile.rect.x / 2
-        rectangleCenterY = tile.rect.y / 2
         tileSize = tile.image.get_width()
         if index <= 15:
             pawn = Pawn('white')
