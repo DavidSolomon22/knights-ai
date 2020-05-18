@@ -1,5 +1,6 @@
 import pygame
-import game
+import gameLogic
+
 
 pygame.init()
 
@@ -38,7 +39,7 @@ def main_menu():
 
         if menuPlay.collidepoint((mx, my)):
             if click:
-                game.drawChessBoard()
+                gameLogic.drawChessBoardWithPawns(800,600)
         if menuExit.collidepoint((mx, my)):
             if click:
                 pygame.quit()
