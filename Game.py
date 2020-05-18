@@ -1,34 +1,6 @@
 import pygame
-
-
-class ChessBoardTile(pygame.sprite.Sprite):
-
-    def __init__(self, color, width, height):
-        super().__init__()
-        self.image = pygame.Surface((width, height))
-        self.image.fill(color)
-
-        # rectangle to detect collisions
-        self.rect = self.image.get_rect()
-
-    def setTilePosition(self, mx, my):
-        self.rect.x = mx
-        self.rect.y = my
-
-
-class Pawn(pygame.sprite.Sprite):
-    def __init__(self, image):
-        super().__init__()
-        if image == "white":
-            self.image = pygame.image.load('Resources/whitePawn.png')
-        else:
-            self.image = pygame.image.load('Resources/blackPawn.png')
-
-        self.rect = self.image.get_rect()
-
-    def setPawnPosition(self, mx, my):
-        self.rect.x = mx
-        self.rect.y = my
+import Pawn
+import ChessBoardTile
 
 
 def drawChessboard(width, height, screen: pygame.Surface):
@@ -43,12 +15,12 @@ def drawChessboard(width, height, screen: pygame.Surface):
         tileColorIndex = x % 2
         for y in range(8):
             if tileColorIndex == 0:
-                tile = ChessBoardTile(whiteTileColor, tileSize, tileSize)
+                tile = ChessBoardTile.ChessBoardTile(whiteTileColor, tileSize, tileSize)
                 tile.setTilePosition((y * tileSize + (width - height) / 2), (x * tileSize))
                 spriteList.add(tile)
                 tileColorIndex = (tileColorIndex + 1) % 2
             else:
-                tile = ChessBoardTile(darkTileColor, tileSize, tileSize)
+                tile = ChessBoardTile.ChessBoardTile(darkTileColor, tileSize, tileSize)
                 tile.setTilePosition((y * tileSize + (width - height) / 2), (x * tileSize))
                 spriteList.add(tile)
                 tileColorIndex = (tileColorIndex + 1) % 2
@@ -64,12 +36,12 @@ def drawPawnsOnChessboard(chessTilesSprintTable: pygame.sprite.Group, screen: py
     for index, tile in enumerate(chessTilesSprintTable):
         tileSize = tile.image.get_width()
         if index <= 15:
-            pawn = Pawn('white')
+            pawn = Pawn.Pawn('white')
             pawnsSprintTable.add(pawn)
             pawn.setPawnPosition(tile.rect.x + (tileSize - pawn.image.get_width()) / 2,
                                  tile.rect.y + (tileSize - pawn.image.get_width()) / 2)
         elif index >= 48:
-            pawn = Pawn('black')
+            pawn = Pawn.Pawn('black')
             pawnsSprintTable.add(pawn)
             pawn.setPawnPosition(tile.rect.x + (tileSize - pawn.image.get_width()) / 2,
                                  tile.rect.y + (tileSize - pawn.image.get_width()) / 2)
