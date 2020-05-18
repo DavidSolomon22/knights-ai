@@ -31,9 +31,11 @@ class Pawn(pygame.sprite.Sprite):
         self.rect.y = my
 
 
-def drawChessboard(width, height, spriteList: pygame.sprite.Group):
-    whiteTile = (232, 235, 239)
-    darkTile = (125, 135, 150)
+def drawChessboard(width, height, screen: pygame.Surface):
+    whiteTileColor = (232, 235, 239)
+    darkTileColor = (125, 135, 150)
+
+    spriteList = pygame.sprite.Group()
 
     tileSize = height / 8
 
@@ -41,48 +43,52 @@ def drawChessboard(width, height, spriteList: pygame.sprite.Group):
         tileColorIndex = x % 2
         for y in range(8):
             if tileColorIndex == 0:
-                tile = ChessBoardTile(whiteTile, tileSize, tileSize)
+                tile = ChessBoardTile(whiteTileColor, tileSize, tileSize)
                 tile.setTilePosition((y * tileSize + (width - height) / 2), (x * tileSize))
                 spriteList.add(tile)
                 tileColorIndex = (tileColorIndex + 1) % 2
             else:
-                tile = ChessBoardTile(darkTile, tileSize, tileSize)
+                tile = ChessBoardTile(darkTileColor, tileSize, tileSize)
                 tile.setTilePosition((y * tileSize + (width - height) / 2), (x * tileSize))
                 spriteList.add(tile)
                 tileColorIndex = (tileColorIndex + 1) % 2
 
+    spriteList.draw(screen)
+
     return spriteList
+
+
+def drawPawnsOnChessboard(chessTilesSprintTable: pygame.sprite.Group, screen: pygame.Surface):
+    pawnsSprintTable = pygame.sprite.Group()
+
+    for index, tile in enumerate(chessTilesSprintTable):
+        tileSize = tile.image.get_width()
+        if index <= 15:
+            pawn = Pawn('white')
+            pawnsSprintTable.add(pawn)
+            pawn.setPawnPosition(tile.rect.x + (tileSize - pawn.image.get_width()) / 2,
+                                 tile.rect.y + (tileSize - pawn.image.get_width()) / 2)
+        elif index >= 48:
+            pawn = Pawn('black')
+            pawnsSprintTable.add(pawn)
+            pawn.setPawnPosition(tile.rect.x + (tileSize - pawn.image.get_width()) / 2,
+                                 tile.rect.y + (tileSize - pawn.image.get_width()) / 2)
+
+    pawnsSprintTable.draw(screen)
+
+    return pawnsSprintTable
 
 
 def drawChessBoardWithPawns(screenWidth, screenHeight, screen: pygame.Surface):
     pygame.init()
-
-    # screen = pygame.display.set_mode((screenWidth, screenHeight))
-
     screen.fill((0, 0, 0))
 
-    chessTilesGroup = pygame.sprite.Group()
+    chessTilesSprintTable = drawChessboard(screenWidth, screenHeight, screen)
 
-    chessPawnsGroup = pygame.sprite.Group()
-
-    chessTilesCreatedTable = drawChessboard(screenWidth, screenHeight, chessTilesGroup)
-
-    chessTilesCreatedTable.draw(screen)
-
-    for index, tile in enumerate(chessTilesCreatedTable):
-        tileSize = tile.image.get_width()
-        if index <= 15:
-            pawn = Pawn('white')
-            chessPawnsGroup.add(pawn)
-            pawn.setPawnPosition(tile.rect.x + (tileSize - pawn.image.get_width())/2, tile.rect.y + (tileSize - pawn.image.get_width())/2)
-        elif index >= 48:
-            pawn = Pawn('black')
-            chessPawnsGroup.add(pawn)
-            pawn.setPawnPosition(tile.rect.x + (tileSize - pawn.image.get_width())/2, tile.rect.y + (tileSize - pawn.image.get_width())/2)
-
-    chessPawnsGroup.draw(screen)
+    pawnsSprintTable = drawPawnsOnChessboard(chessTilesSprintTable, screen)
 
     gameRunning = True
+
     while gameRunning:
 
         for event in pygame.event.get():
@@ -90,6 +96,6 @@ def drawChessBoardWithPawns(screenWidth, screenHeight, screen: pygame.Surface):
                 pygame.quit()
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
-                    pygame.quit()
+                    gameRunning = False
 
         pygame.display.update()
