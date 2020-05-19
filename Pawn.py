@@ -7,10 +7,12 @@ class Pawn(pygame.sprite.Sprite):
         self.chosenPawnImage = pygame.image.load('Resources/chosenPawn.png')
 
         if image == "white":
-            self.color = pygame.image.load('Resources/whitePawn.png')
+            self.defaultPawn = pygame.image.load('Resources/whitePawn.png')
+            self.color = image
         else:
-            self.color = pygame.image.load('Resources/blackPawn.png')
-        self.image = self.color
+            self.defaultPawn = pygame.image.load('Resources/blackPawn.png')
+            self.color = image
+        self.image = self.defaultPawn
 
         self.rect = self.image.get_rect()
 
@@ -18,10 +20,10 @@ class Pawn(pygame.sprite.Sprite):
         self.rect.x = mx
         self.rect.y = my
 
-    def PawnClicked(self):
+    def PawnSelected(self):
         self.image = self.chosenPawnImage
 
-    def PawnUnclicked(self):
+    def PawnUnselected(self):
         self.image = self.color
 
     def movePawn(self, mx, my, chessTilesSprintTable: pygame.sprite.Group, pawnsSprintTable: pygame.sprite.Group):
@@ -30,4 +32,6 @@ class Pawn(pygame.sprite.Sprite):
                 if tileSprite.checkIfContainsPawn(mx, my, pawnsSprintTable):
                     self.rect.x = tileSprite.getTileCenterX(self)
                     self.rect.y = tileSprite.getTileCenterY(self)
-                # elif:
+
+
+
