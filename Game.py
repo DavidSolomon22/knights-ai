@@ -77,19 +77,22 @@ def drawChessBoardWithPawns(screenWidth, screenHeight, screen: pygame.Surface):
                 if click:
                     if(round %2==0):
                         if(pawnSprite.color=='white'):
+                            print('white')
                             chosenPawn = True
                             clickedPawn = pawnSprite
+                            clickedPawn.PawnClicked()
                             round+=1
                         else:
                             chosenPawn=False
                     else:
                         if(pawnSprite.color=='black'):
+                            print('black')
                             chosenPawn=True
                             clickedPawn=pawnSprite
+                            clickedPawn.PawnClicked()
                             round+=1
                         else:
                             clickedPawn=False
-
 
         click = False
 
@@ -103,10 +106,17 @@ def drawChessBoardWithPawns(screenWidth, screenHeight, screen: pygame.Surface):
                 if event.button == 1:
                     click = True
                     if click and chosenPawn:
-                        clickedPawn.movePawn(mx, my, chessTilesSprintTable)
+                        clickedPawn.movePawn(mx, my, chessTilesSprintTable,pawnsSprintTable)
+                        clickedPawn.PawnUnclicked()
                         chosenPawn = False
                         clickedPawn = None
                         click = False
+                elif event.button == 3:
+                    chosenPawn = False
+                    clickedPawn.PawnUnclicked()
+                    clickedPawn = None
+                    click = False
+
 
         chessTilesSprintTable.draw(screen)
 

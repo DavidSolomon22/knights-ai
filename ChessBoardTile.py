@@ -1,4 +1,5 @@
 import pygame
+import Pawn
 
 
 class ChessBoardTile(pygame.sprite.Sprite):
@@ -22,3 +23,9 @@ class ChessBoardTile(pygame.sprite.Sprite):
     def getTileCenterY(self, objectSprite):
         tileY = self.rect.y + (self.image.get_width() - objectSprite.image.get_height()) / 2
         return tileY
+
+    def checkIfContainsPawn(self, mx, my, pawnsSprintTable: pygame.sprite.Group):
+        for pawnSprint in pawnsSprintTable:
+            if pawnSprint.rect.collidepoint((self.getTileCenterX(pawnSprint), self.getTileCenterY(pawnSprint))):
+                return False
+        return True
