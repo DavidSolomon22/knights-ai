@@ -3,7 +3,7 @@ import Pawn
 import ChessBoardTile
 
 
-def drawChessboard(width, height, screen: pygame.Surface):
+def createChessboard(width, height):
     whiteTileColor = (232, 235, 239)
     darkTileColor = (125, 135, 150)
 
@@ -25,12 +25,10 @@ def drawChessboard(width, height, screen: pygame.Surface):
                 spriteList.add(tile)
                 tileColorIndex = (tileColorIndex + 1) % 2
 
-    spriteList.draw(screen)
-
     return spriteList
 
 
-def drawPawnsOnChessboard(chessTilesSprintTable: pygame.sprite.Group, screen: pygame.Surface):
+def createPawnsOnChessboard(chessTilesSprintTable: pygame.sprite.Group):
     pawnsSprintTable = pygame.sprite.Group()
 
     for index, tile in enumerate(chessTilesSprintTable):
@@ -46,8 +44,6 @@ def drawPawnsOnChessboard(chessTilesSprintTable: pygame.sprite.Group, screen: py
             pawn.setPawnPosition(tile.rect.x + (tileSize - pawn.image.get_width()) / 2,
                                  tile.rect.y + (tileSize - pawn.image.get_width()) / 2)
 
-    pawnsSprintTable.draw(screen)
-
     return pawnsSprintTable
 
 
@@ -55,13 +51,31 @@ def drawChessBoardWithPawns(screenWidth, screenHeight, screen: pygame.Surface):
     pygame.init()
     screen.fill((0, 0, 0))
 
-    chessTilesSprintTable = drawChessboard(screenWidth, screenHeight, screen)
+    chessTilesSprintTable = createChessboard(screenWidth, screenHeight)
 
-    pawnsSprintTable = drawPawnsOnChessboard(chessTilesSprintTable, screen)
+    pawnsSprintTable = createPawnsOnChessboard(chessTilesSprintTable)
 
     gameRunning = True
 
+    click = False
+
+    choosenPawn = False
+
+    clickedPawn: Pawn
+
     while gameRunning:
+
+        screen.fill((0, 0, 0))
+
+        mx, my = pygame.mouse.get_pos()
+
+        for pawnSprite in pawnsSprintTable:
+            if pawnSprite.rect.collidepoint((mx, my)):
+                if click:
+                    choosenPawn = True
+                    clickedPawn = pawnSprite
+
+        click = False
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -69,5 +83,17 @@ def drawChessBoardWithPawns(screenWidth, screenHeight, screen: pygame.Surface):
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     gameRunning = False
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if event.button == 1:
+                    click = True
+                    if click and choosenPawn:
+                        clickedPawn.movePawn(mx, my)
+                        choosenPawn = False
+                        clickedPawn = None
+                        click = False
+
+        chessTilesSprintTable.draw(screen)
+
+        pawnsSprintTable.draw(screen)
 
         pygame.display.update()

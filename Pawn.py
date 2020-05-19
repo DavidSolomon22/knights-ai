@@ -10,7 +10,13 @@ class Pawn(pygame.sprite.Sprite):
             self.image = pygame.image.load('Resources/blackPawn.png')
 
         self.rect = self.image.get_rect()
+        self.color = image
 
     def setPawnPosition(self, mx, my):
+        self.rect.x = mx
+        self.rect.y = my
+        # print(self.rect)
+
+    def movePawn(self, mx, my):
         self.rect.x = mx
         self.rect.y = my
