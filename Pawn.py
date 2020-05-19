@@ -12,7 +12,7 @@ class Pawn(pygame.sprite.Sprite):
         else:
             self.defaultPawn = pygame.image.load('Resources/blackPawn.png')
             self.color = image
-        self.image = self.color
+        self.image = self.defaultPawn
 
         self.rect = self.image.get_rect()
 
