@@ -1,5 +1,6 @@
 import pygame
 
+
 class ChessBoardTile(pygame.sprite.Sprite):
 
     def __init__(self, color, width, height):
@@ -13,3 +14,11 @@ class ChessBoardTile(pygame.sprite.Sprite):
     def setTilePosition(self, mx, my):
         self.rect.x = mx
         self.rect.y = my
+
+    def getTileCenterX(self, objectSprite):
+        tileX = self.rect.x + (self.image.get_width() - objectSprite.image.get_width()) / 2
+        return tileX
+
+    def getTileCenterY(self, objectSprite):
+        tileY = self.rect.y + (self.image.get_width() - objectSprite.image.get_height()) / 2
+        return tileY

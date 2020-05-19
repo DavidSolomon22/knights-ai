@@ -15,8 +15,9 @@ class Pawn(pygame.sprite.Sprite):
     def setPawnPosition(self, mx, my):
         self.rect.x = mx
         self.rect.y = my
-        # print(self.rect)
 
-    def movePawn(self, mx, my):
-        self.rect.x = mx
-        self.rect.y = my
+    def movePawn(self, mx, my, chessTilesSprintTable: pygame.sprite.Group):
+        for tileSprite in chessTilesSprintTable:
+            if tileSprite.rect.collidepoint((mx, my)):
+                self.rect.x = tileSprite.getTileCenterX(self)
+                self.rect.y = tileSprite.getTileCenterY(self)
