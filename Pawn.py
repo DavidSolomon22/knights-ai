@@ -24,7 +24,7 @@ class Pawn(pygame.sprite.Sprite):
         self.image = self.chosenPawnImage
 
     def PawnUnselected(self):
-        self.image = self.color
+        self.image = self.defaultPawn
 
     def movePawn(self, mx, my, chessTilesSprintTable: pygame.sprite.Group, pawnsSprintTable: pygame.sprite.Group):
         for tileSprite in chessTilesSprintTable:
