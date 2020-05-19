@@ -34,17 +34,18 @@ def createPawnsOnChessboard(chessTilesSprintTable: pygame.sprite.Group):
     for index, tile in enumerate(chessTilesSprintTable):
         tileSize = tile.image.get_width()
         if index <= 15:
-            pawn = Pawn.Pawn('white')
+            pawn = Pawn.Pawn('black')
             pawnsSprintTable.add(pawn)
             pawn.setPawnPosition(tile.rect.x + (tileSize - pawn.image.get_width()) / 2,
                                  tile.rect.y + (tileSize - pawn.image.get_width()) / 2)
         elif index >= 48:
-            pawn = Pawn.Pawn('black')
+            pawn = Pawn.Pawn('white')
             pawnsSprintTable.add(pawn)
             pawn.setPawnPosition(tile.rect.x + (tileSize - pawn.image.get_width()) / 2,
                                  tile.rect.y + (tileSize - pawn.image.get_width()) / 2)
 
     return pawnsSprintTable
+
 
 
 def drawChessBoardWithPawns(screenWidth, screenHeight, screen: pygame.Surface):
@@ -63,6 +64,8 @@ def drawChessBoardWithPawns(screenWidth, screenHeight, screen: pygame.Surface):
 
     clickedPawn: Pawn
 
+    round=0
+    
     while gameRunning:
 
         screen.fill((0, 0, 0))
@@ -72,9 +75,24 @@ def drawChessBoardWithPawns(screenWidth, screenHeight, screen: pygame.Surface):
         for pawnSprite in pawnsSprintTable:
             if pawnSprite.rect.collidepoint((mx, my)):
                 if click:
-                    chosenPawn = True
-                    clickedPawn = pawnSprite
-                    clickedPawn.PawnSelected()
+                    if(round %2==0):
+                        if(pawnSprite.color=='white'):
+                            print('white')
+                            chosenPawn = True
+                            clickedPawn = pawnSprite
+                            clickedPawn.PawnClicked()
+                            round+=1
+                        else:
+                            chosenPawn=False
+                    else:
+                        if(pawnSprite.color=='black'):
+                            print('black')
+                            chosenPawn=True
+                            clickedPawn=pawnSprite
+                            clickedPawn.PawnClicked()
+                            round+=1
+                        else:
+                            clickedPawn=False
 
         click = False
 
@@ -104,4 +122,6 @@ def drawChessBoardWithPawns(screenWidth, screenHeight, screen: pygame.Surface):
 
         pawnsSprintTable.draw(screen)
 
+
         pygame.display.update()
+
