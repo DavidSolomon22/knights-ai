@@ -39,11 +39,27 @@ class Pawn(pygame.sprite.Sprite):
     def checkIfPawnIsMovingToTheNearestTile(self, newPawnTile: pygame.sprite.Sprite):
         distanceX = abs(newPawnTile.getTileCenterX() - self.getTileCenterX())
         distanceY = abs(newPawnTile.getTileCenterY() - self.getTileCenterY())
+        print(distanceX)
+        print(distanceY)
 
-        if not (distanceX == newPawnTile.image.get_width() and distanceY == newPawnTile.image.get_height()):
+        if (distanceX == newPawnTile.image.get_width()) ^ (distanceY == newPawnTile.image.get_height()):
+            if (distanceX > newPawnTile.image.get_width()) or (distanceY > newPawnTile.image.get_height()):
+                return False
             return True
         else:
             return False
+
+    def checkIfPawnIsJumpingOver(self, newPawnTile: pygame.sprite.Sprite):
+        distanceX = abs(newPawnTile.getTileCenterX() - self.getTileCenterX())
+        distanceY = abs(newPawnTile.getTileCenterY() - self.getTileCenterY())
+
+        if (distanceX == (newPawnTile.image.get_width() * 2)) ^ (distanceY == (newPawnTile.image.get_height() * 2)):
+            if (distanceX == newPawnTile.image.get_width()) or (distanceY == newPawnTile.image.get_height()):
+                return False
+            return True
+        else:
+            return False
+
 
     def movePawn(self, mx, my, chessTilesSprintTable: pygame.sprite.Group, pawnsSprintTable: pygame.sprite.Group):
         for tileSprite in chessTilesSprintTable:
@@ -56,9 +72,14 @@ class Pawn(pygame.sprite.Sprite):
                     else:
                         return False
                 else:
-                    return False
-
-
-
+                    if tileSprite.checkIfContainsPawn(pawnsSprintTable):
+                        if self.checkIfPawnIsJumpingOver(tileSprite):
+                            print('Double jump possible')
+                        else:
+                            print('Double jump not possible')
+                            return False
+                    else:
+                        print("pawn 2 tiles away")
+                        return False
 
 
