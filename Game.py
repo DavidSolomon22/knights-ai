@@ -54,6 +54,7 @@ def draw_text(text, font, fontSize , color, surface, x, y):
     surface.blit(textobj, textrect)
     return textrect
 
+
 def drawChessBoardWithPawns(screenWidth, screenHeight, screen: pygame.Surface):
     pygame.init()
     screen.fill((0, 0, 0))
@@ -69,13 +70,11 @@ def drawChessBoardWithPawns(screenWidth, screenHeight, screen: pygame.Surface):
     chosenPawn = False
 
     clickedPawn: Pawn
-    pygame.font.init()  # you have to call this at the start,
-    # if you want to use this module.
-    myfont = pygame.font.SysFont('Comic Sans MS', 30)
-    textsurface = myfont.render('Some Text', False, (0, 0, 0))
-    round=0
     player=1
-    
+
+
+    roundIndex = 0
+
     while gameRunning:
 
         screen.fill((0, 0, 0))
@@ -90,22 +89,18 @@ def drawChessBoardWithPawns(screenWidth, screenHeight, screen: pygame.Surface):
         for pawnSprite in pawnsSprintTable:
             if pawnSprite.rect.collidepoint((mx, my)):
                 if click:
-                    if (round % 2 == 0):
-                        if (pawnSprite.color == 'white'):
+                    if roundIndex % 2 == 0:
+                        if pawnSprite.color == 'white':
                             chosenPawn = True
                             clickedPawn = pawnSprite
                             clickedPawn.PawnSelected()
-                            round += 1
-
-
+                            roundIndex += 1
                     else:
-                        if (pawnSprite.color == 'black'):
+                        if pawnSprite.color == 'black':
                             chosenPawn = True
                             clickedPawn = pawnSprite
                             clickedPawn.PawnSelected()
-                            round += 1
-
-
+                            roundIndex += 1
 
         click = False
 
@@ -119,22 +114,27 @@ def drawChessBoardWithPawns(screenWidth, screenHeight, screen: pygame.Surface):
                 if event.button == 1:
                     click = True
                     if click and chosenPawn:
-                        clickedPawn.movePawn(mx, my, chessTilesSprintTable,pawnsSprintTable)
-                        if(clickedPawn.color=='white'):
-                            player=2
+                        if clickedPawn.movePawn(mx, my, chessTilesSprintTable, pawnsSprintTable):
+                            if (clickedPawn.color == 'white'):
+                                player = 2
+                            else:
+                                player = 1
+                            clickedPawn.PawnUnselected()
+                            chosenPawn = False
+                            clickedPawn = None
+                            click = False
                         else:
-                            player=1
-                        clickedPawn.PawnUnselected()
-                        chosenPawn = False
-                        clickedPawn = None
-                        click = False
+                            clickedPawn.PawnUnselected()
+                            chosenPawn = False
+                            clickedPawn = None
+                            click = False
+                            roundIndex -= 1
                 elif event.button == 3:
                     chosenPawn = False
                     clickedPawn.PawnUnselected()
                     clickedPawn = None
                     click = False
-                    round-=1
-
+                    roundIndex -= 1
 
         chessTilesSprintTable.draw(screen)
 
@@ -146,6 +146,4 @@ def drawChessBoardWithPawns(screenWidth, screenHeight, screen: pygame.Surface):
 
 
         pygame.display.update()
-
-
 

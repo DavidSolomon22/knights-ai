@@ -1,7 +1,6 @@
 import pygame
 import Game
 
-
 pygame.init()
 
 screen = pygame.display.set_mode((800, 600))
@@ -14,13 +13,13 @@ pygame.display.set_caption("Knights AI")
 pygame.display.set_icon(gameIcon)
 
 
-def draw_text(text, font, fontSize , color, surface, x, y):
+def draw_text(text, font, fontSize, color, surface, x, y):
     messageText = pygame.font.Font(f'Resources/{font}', fontSize)
-    textobj = messageText.render(text, 1, color)
-    textrect = textobj.get_rect()
-    textrect.topleft = (x, y)
-    surface.blit(textobj, textrect)
-    return textrect
+    textObj = messageText.render(text, 1, color)
+    textRect = textObj.get_rect()
+    textRect.topleft = (x, y)
+    surface.blit(textObj, textRect)
+    return textRect
 
 
 click = False
@@ -31,9 +30,9 @@ def main_menu():
 
         screen.fill((0, 0, 0))
         screen.blit(menuBackground, (0, 0))
-        gameName = draw_text('KNIGHTS', 'gameTitleFont.ttf',80, blackColor, screen, 50,50)
-        menuPlay = draw_text('Play','menuFont.otf',45, blackColor, screen, 100, 220)
-        menuExit = draw_text('Exit','menuFont.otf',45,blackColor, screen, 100, 340)
+        gameName = draw_text('KNIGHTS', 'gameTitleFont.ttf', 80, blackColor, screen, 50, 50)
+        menuPlay = draw_text('Play', 'menuFont.otf', 45, blackColor, screen, 100, 220)
+        menuExit = draw_text('Exit', 'menuFont.otf', 45, blackColor, screen, 100, 340)
 
         mx, my = pygame.mouse.get_pos()
 
@@ -57,7 +56,6 @@ def main_menu():
                     click = True
 
         pygame.display.update()
-
 
 
 # def options():
