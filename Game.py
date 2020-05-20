@@ -63,7 +63,7 @@ def drawChessBoardWithPawns(screenWidth, screenHeight, screen: pygame.Surface):
 
     clickedPawn: Pawn
 
-    round = 0
+    roundIndex = 0
 
     while gameRunning:
 
@@ -74,24 +74,18 @@ def drawChessBoardWithPawns(screenWidth, screenHeight, screen: pygame.Surface):
         for pawnSprite in pawnsSprintTable:
             if pawnSprite.rect.collidepoint((mx, my)):
                 if click:
-                    if round % 2 == 0:
+                    if roundIndex % 2 == 0:
                         if pawnSprite.color == 'white':
-                            print('white')
                             chosenPawn = True
                             clickedPawn = pawnSprite
                             clickedPawn.PawnSelected()
-                            round += 1
-                        else:
-                            chosenPawn = False
+                            roundIndex += 1
                     else:
                         if pawnSprite.color == 'black':
-                            print('black')
                             chosenPawn = True
                             clickedPawn = pawnSprite
                             clickedPawn.PawnSelected()
-                            round += 1
-                        else:
-                            clickedPawn = False
+                            roundIndex += 1
 
         click = False
 
@@ -115,6 +109,7 @@ def drawChessBoardWithPawns(screenWidth, screenHeight, screen: pygame.Surface):
                     clickedPawn.PawnUnselected()
                     clickedPawn = None
                     click = False
+                    roundIndex -= 1
 
         chessTilesSprintTable.draw(screen)
 
