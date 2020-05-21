@@ -103,7 +103,7 @@ class Pawn(pygame.sprite.Sprite):
                             if self.doubleJump(tileSprite, pawnsSprintTable):
                                 self.setPawnPosition(tileSprite.getTileCenterXForDrawingPawn(self),
                                                      tileSprite.getTileCenterYForDrawingPawn(self))
-                                return True
+                                return False
 
                         else:
                             return False
