@@ -1,6 +1,8 @@
 import pygame
 import Pawn
 import ChessBoardTile
+import time
+
 
 def createChessboard(width, height):
     whiteTileColor = (232, 235, 239)
@@ -45,7 +47,8 @@ def createPawnsOnChessboard(chessTilesSprintTable: pygame.sprite.Group):
 
     return pawnsSprintTable
 
-def draw_text(text, font, fontSize , color, surface, x, y):
+
+def draw_text(text, font, fontSize, color, surface, x, y):
     messageText = pygame.font.Font(f'Resources/{font}', fontSize)
     textobj = messageText.render(text, 1, color)
     textrect = textobj.get_rect()
@@ -71,6 +74,7 @@ def displayPlayerName(roundIndex, screen: pygame.Surface):
         playerText2 = draw_text('Player 2', 'gameTitleFont.ttf', 20, (255, 255, 255), screen, 0, 0)
         return playerText2
 
+
 def drawChessBoardWithPawns(screenWidth, screenHeight, screen: pygame.Surface):
     pygame.init()
 
@@ -85,8 +89,6 @@ def drawChessBoardWithPawns(screenWidth, screenHeight, screen: pygame.Surface):
     chosenPawn = False
 
     clickedPawn: Pawn
-    player=1
-
 
     hasDoubleJumped = False
 
@@ -94,8 +96,8 @@ def drawChessBoardWithPawns(screenWidth, screenHeight, screen: pygame.Surface):
 
     roundIndex = 0
 
-    whitePawnAtEnd=[]
-    blackPawnAtEnd=[]
+    whitePawnAtEnd = []
+    blackPawnAtEnd = []
 
     while gameRunning:
 
@@ -142,7 +144,8 @@ def drawChessBoardWithPawns(screenWidth, screenHeight, screen: pygame.Surface):
                 if event.button == 1:
                     click = True
                     if click and chosenPawn:
-                        hasDoubleJumped, madeAMove = clickedPawn.movePawn(mx, my, chessTilesSprintTable, pawnsSprintTable, hasDoubleJumped,madeAMove)
+                        hasDoubleJumped, madeAMove = clickedPawn.movePawn(mx, my, chessTilesSprintTable,
+                                                                          pawnsSprintTable, hasDoubleJumped, madeAMove)
                         clickedPawn.PawnUnselected()
                         chosenPawn = False
                         clickedPawn = None
@@ -155,32 +158,36 @@ def drawChessBoardWithPawns(screenWidth, screenHeight, screen: pygame.Surface):
 
         chessTilesSprintTable.draw(screen)
 
+
+        #display winner
         for sprite in pawnsSprintTable:
-            if sprite.color=='white':
-                if(len(whitePawnAtEnd)==16):
+            if sprite.color == 'white':
+                if len(whitePawnAtEnd) == 16:
+                    screen.fill((0,0,0))
                     playerWin = draw_text('Player 1 Wins', 'gameTitleFont.ttf', 50, (255, 180, 0), screen, 240, 240)
+                    pygame.display.update()
+                    time.sleep(0.2)
                     gameRunning = False
                 if sprite in whitePawnAtEnd:
-                    if sprite.rect.y >96:
+                    if sprite.rect.y > 96:
                         whitePawnAtEnd.remove(sprite)
                 else:
-                    if sprite.rect.y<=96:
+                    if sprite.rect.y <= 96:
                         whitePawnAtEnd.append(sprite)
-            else :
-                if(len(blackPawnAtEnd)==16):
-                    pplayerWin2 = draw_text('Player 2 Wins', 'gameTitleFont.ttf', 50, (255, 180, 0), screen, 240, 240)
-                    gameRunning=False
+            else:
+                if len(blackPawnAtEnd) == 16:
+                    screen.fill((0, 0, 0))
+                    playerWin2 = draw_text('Player 2 Wins', 'gameTitleFont.ttf', 50, (255, 180, 0), screen, 240, 240)
+                    pygame.display.update()
+                    time.sleep(0.2)
+                    gameRunning = False
                 if sprite in blackPawnAtEnd:
-                    if sprite.rect.y <471:
+                    if sprite.rect.y < 471:
                         blackPawnAtEnd.remove(sprite)
                 else:
-                    if sprite.rect.y>=471:
+                    if sprite.rect.y >= 471:
                         blackPawnAtEnd.append(sprite)
 
         pawnsSprintTable.draw(screen)
 
-
-
-
         pygame.display.update()
-
