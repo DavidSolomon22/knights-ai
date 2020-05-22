@@ -54,9 +54,25 @@ def draw_text(text, font, fontSize , color, surface, x, y):
     return textrect
 
 
+def draw_text(text, font, fontSize, color, surface, x, y):
+    messageText = pygame.font.Font(f'Resources/{font}', fontSize)
+    textobj = messageText.render(text, 1, color)
+    textrect = textobj.get_rect()
+    textrect.topleft = (x, y)
+    surface.blit(textobj, textrect)
+    return textrect
+
+
+def displayPlayerName(roundIndex, screen: pygame.Surface):
+    if roundIndex % 2 == 0:
+        playerText1 = draw_text('Player 1', 'gameTitleFont.ttf', 20, (255, 255, 255), screen, 0, 560)
+        return playerText1
+    elif roundIndex % 2 == 1:
+        playerText2 = draw_text('Player 2', 'gameTitleFont.ttf', 20, (255, 255, 255), screen, 0, 0)
+        return playerText2
+
 def drawChessBoardWithPawns(screenWidth, screenHeight, screen: pygame.Surface):
     pygame.init()
-    screen.fill((0, 0, 0))
 
     chessTilesSprintTable = createChessboard(screenWidth, screenHeight)
 
@@ -72,6 +88,10 @@ def drawChessBoardWithPawns(screenWidth, screenHeight, screen: pygame.Surface):
     player=1
 
 
+    hasDoubleJumped = False
+
+    madeAMove = False
+
     roundIndex = 0
 
     whitePawnAtEnd=[]
@@ -81,10 +101,7 @@ def drawChessBoardWithPawns(screenWidth, screenHeight, screen: pygame.Surface):
 
         screen.fill((0, 0, 0))
 
-        if (player == 1):
-            playerText = draw_text('Player 1', 'gameTitleFont.ttf', 20, (255, 255, 255), screen, 0, 560)
-        elif (player == 2):
-            player2Text = draw_text('Player 2', 'gameTitleFont.ttf', 20, (255, 255, 255), screen, 0, 0)
+        finishButton = draw_text('End turn', 'gameTitleFont.ttf', 17, (255, 255, 255), screen, 710, 300)
 
         mx, my = pygame.mouse.get_pos()
 
@@ -96,13 +113,22 @@ def drawChessBoardWithPawns(screenWidth, screenHeight, screen: pygame.Surface):
                             chosenPawn = True
                             clickedPawn = pawnSprite
                             clickedPawn.PawnSelected()
-                            roundIndex += 1
                     else:
                         if pawnSprite.color == 'black':
                             chosenPawn = True
                             clickedPawn = pawnSprite
                             clickedPawn.PawnSelected()
-                            roundIndex += 1
+
+        displayPlayerName(roundIndex, screen)
+
+        if click:
+            if finishButton.collidepoint((mx, my)):
+                if madeAMove:
+                    if clickedPawn != None:
+                        clickedPawn.PawnUnselected()
+                    hasDoubleJumped = False
+                    madeAMove = False
+                    roundIndex += 1
 
         click = False
 
@@ -116,27 +142,16 @@ def drawChessBoardWithPawns(screenWidth, screenHeight, screen: pygame.Surface):
                 if event.button == 1:
                     click = True
                     if click and chosenPawn:
-                        if clickedPawn.movePawn(mx, my, chessTilesSprintTable, pawnsSprintTable):
-                            if (clickedPawn.color == 'white'):
-                                player = 2
-                            else:
-                                player = 1
-                            clickedPawn.PawnUnselected()
-                            chosenPawn = False
-                            clickedPawn = None
-                            click = False
-                        else:
-                            clickedPawn.PawnUnselected()
-                            chosenPawn = False
-                            clickedPawn = None
-                            click = False
-                            roundIndex -= 1
+                        hasDoubleJumped, madeAMove = clickedPawn.movePawn(mx, my, chessTilesSprintTable, pawnsSprintTable, hasDoubleJumped,madeAMove)
+                        clickedPawn.PawnUnselected()
+                        chosenPawn = False
+                        clickedPawn = None
+                        click = False
                 elif event.button == 3:
                     chosenPawn = False
                     clickedPawn.PawnUnselected()
                     clickedPawn = None
                     click = False
-                    roundIndex -= 1
 
         chessTilesSprintTable.draw(screen)
 
