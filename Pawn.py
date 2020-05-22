@@ -39,8 +39,6 @@ class Pawn(pygame.sprite.Sprite):
     def checkIfPawnIsMovingToTheNearestTile(self, newPawnTile: pygame.sprite.Sprite):
         distanceX = abs(newPawnTile.getTileCenterX() - self.getTileCenterX())
         distanceY = abs(newPawnTile.getTileCenterY() - self.getTileCenterY())
-        print(newPawnTile.getTileCenterX())
-        print(newPawnTile.getTileCenterY())
 
         if (distanceX == newPawnTile.image.get_width()) ^ (distanceY == newPawnTile.image.get_height()):
             if (distanceX > newPawnTile.image.get_width()) or (distanceY > newPawnTile.image.get_height()):
@@ -87,25 +85,57 @@ class Pawn(pygame.sprite.Sprite):
                     if pawn.rect.y == pawnInBettwenY and pawn.rect.x == self.rect.x:
                         return True
 
-    def movePawn(self, mx, my, chessTilesSprintTable: pygame.sprite.Group, pawnsSprintTable: pygame.sprite.Group):
+    def movePawn(self, mx, my, chessTilesSprintTable: pygame.sprite.Group, pawnsSprintTable: pygame.sprite.Group,
+                 hasDoubleJumped, madeAMove):
+
         for tileSprite in chessTilesSprintTable:
             if tileSprite.rect.collidepoint((mx, my)):
                 if self.checkIfPawnIsMovingToTheNearestTile(tileSprite):
-                    if tileSprite.checkIfContainsPawn(pawnsSprintTable):
-                        self.setPawnPosition(tileSprite.getTileCenterXForDrawingPawn(self),
-                                             tileSprite.getTileCenterYForDrawingPawn(self))
-                        return True
-                    else:
-                        return False
-                else:
-                    if tileSprite.checkIfContainsPawn(pawnsSprintTable):
-                        if self.checkIfPawnIsJumpingOver(tileSprite):
-                            if self.doubleJump(tileSprite, pawnsSprintTable):
-                                self.setPawnPosition(tileSprite.getTileCenterXForDrawingPawn(self),
-                                                     tileSprite.getTileCenterYForDrawingPawn(self))
-                                return False
-
+                    if not madeAMove:
+                        if tileSprite.checkIfContainsPawn(pawnsSprintTable):
+                            self.setPawnPosition(tileSprite.getTileCenterXForDrawingPawn(self),
+                                                 tileSprite.getTileCenterYForDrawingPawn(self))
+                            return False, True
                         else:
-                            return False
+                            return False, False
+                    elif hasDoubleJumped:
+                        return True, True
                     else:
-                        return False
+                        return False, True
+                else:
+                    if self.checkIfPawnIsJumpingOver(tileSprite):
+                        if not hasDoubleJumped:
+                            if not madeAMove:
+                                if tileSprite.checkIfContainsPawn(pawnsSprintTable):
+                                    if self.doubleJump(tileSprite, pawnsSprintTable):
+                                        self.setPawnPosition(tileSprite.getTileCenterXForDrawingPawn(self),
+                                                             tileSprite.getTileCenterYForDrawingPawn(self))
+                                        return True, True
+                                    else:
+                                        return False, False
+                                else:
+                                    return False, False
+                            else:
+                                return False, True
+                        else:
+                            if tileSprite.checkIfContainsPawn(pawnsSprintTable):
+                                if self.doubleJump(tileSprite, pawnsSprintTable):
+                                    self.setPawnPosition(tileSprite.getTileCenterXForDrawingPawn(self),
+                                                         tileSprite.getTileCenterYForDrawingPawn(self))
+                                    return True, True
+                                else:
+                                    return True, True
+                            else:
+                                return True, True
+                    else:
+                        if madeAMove:
+                            return True, True
+                        else:
+                            return False, False
+        if madeAMove:
+            if hasDoubleJumped:
+                return True, True
+            else:
+                return False, True
+        else:
+            return False, False
