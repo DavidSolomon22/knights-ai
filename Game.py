@@ -2,7 +2,6 @@ import pygame
 import Pawn
 import ChessBoardTile
 
-
 def createChessboard(width, height):
     whiteTileColor = (232, 235, 239)
     darkTileColor = (125, 135, 150)
@@ -75,6 +74,9 @@ def drawChessBoardWithPawns(screenWidth, screenHeight, screen: pygame.Surface):
 
     roundIndex = 0
 
+    whitePawnAtEnd=[]
+    blackPawnAtEnd=[]
+
     while gameRunning:
 
         screen.fill((0, 0, 0))
@@ -138,7 +140,27 @@ def drawChessBoardWithPawns(screenWidth, screenHeight, screen: pygame.Surface):
 
         chessTilesSprintTable.draw(screen)
 
-
+        for sprite in pawnsSprintTable:
+            if sprite.color=='white':
+                if(len(whitePawnAtEnd)==16):
+                    playerWin = draw_text('Player 1 Wins', 'gameTitleFont.ttf', 50, (255, 180, 0), screen, 240, 240)
+                    gameRunning = False
+                if sprite in whitePawnAtEnd:
+                    if sprite.rect.y >96:
+                        whitePawnAtEnd.remove(sprite)
+                else:
+                    if sprite.rect.y<=96:
+                        whitePawnAtEnd.append(sprite)
+            else :
+                if(len(blackPawnAtEnd)==16):
+                    pplayerWin2 = draw_text('Player 2 Wins', 'gameTitleFont.ttf', 50, (255, 180, 0), screen, 240, 240)
+                    gameRunning=False
+                if sprite in blackPawnAtEnd:
+                    if sprite.rect.y <471:
+                        blackPawnAtEnd.remove(sprite)
+                else:
+                    if sprite.rect.y>=471:
+                        blackPawnAtEnd.append(sprite)
 
         pawnsSprintTable.draw(screen)
 
