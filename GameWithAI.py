@@ -3,7 +3,7 @@ import Pawn
 import ChessBoardTile
 import time
 import  mcts
-
+import random
 
 def createChessboard(width, height):
     whiteTileColor = (232, 235, 239)
@@ -66,9 +66,30 @@ def displayPlayerName(roundIndex, screen: pygame.Surface):
         playerText2 = draw_text('Player 2', 'gameTitleFont.ttf', 20, (255, 255, 255), screen, 0, 0)
         return playerText2
 
+# TODO: funkcja, która zwraca pionek do ruszenia po otrzymaniu stanu następnego gry
+def fromCompactState(board):
+    # i will have compactState board
+    # i need to iterate through overy pawn
+    # return Pawn
+    return Pawn()
+
+
+def movePlayerWithAI(pawnsSprintTable: pygame.sprite.Group):
+    randomPawn = random.choice(pawnsSprintTable.sprites())
+
+    while randomPawn.color != 'black':
+        randomPawn = random.choice(pawnsSprintTable.sprites())
+
+    randomPawn.setPawnPosition(300,300)
+
+
+
 
 def drawChessBoardWithPawns(screenWidth, screenHeight, screen: pygame.Surface):
     pygame.init()
+
+    # uzupełnić parametry
+    # UCT = mcts.UCT()
 
     chessTilesSprintTable = createChessboard(screenWidth, screenHeight)
 
@@ -99,6 +120,11 @@ def drawChessBoardWithPawns(screenWidth, screenHeight, screen: pygame.Surface):
 
         mx, my = pygame.mouse.get_pos()
 
+        # To powinno wystarczyc do implementacji ruchu komputera
+        if roundIndex % 2 == 1:
+            movePlayerWithAI(pawnsSprintTable)
+            roundIndex += 1
+
         for pawnSprite in pawnsSprintTable:
             if pawnSprite.rect.collidepoint((mx, my)):
                 if click:
@@ -107,11 +133,11 @@ def drawChessBoardWithPawns(screenWidth, screenHeight, screen: pygame.Surface):
                             chosenPawn = True
                             clickedPawn = pawnSprite
                             clickedPawn.PawnSelected()
-                    else:
-                        if pawnSprite.color == 'black':
-                            chosenPawn = True
-                            clickedPawn = pawnSprite
-                            clickedPawn.PawnSelected()
+                    # else:
+                    #     if pawnSprite.color == 'black':
+                    #         chosenPawn = True
+                    #         clickedPawn = pawnSprite
+                    #         clickedPawn.PawnSelected()
 
         displayPlayerName(roundIndex, screen)
 
@@ -148,9 +174,6 @@ def drawChessBoardWithPawns(screenWidth, screenHeight, screen: pygame.Surface):
                     clickedPawn = None
                     click = False
 
-        chessTilesSprintTable.draw(screen)
-
-
         #display winner
         for sprite in pawnsSprintTable:
             if sprite.color == 'white':
@@ -179,6 +202,8 @@ def drawChessBoardWithPawns(screenWidth, screenHeight, screen: pygame.Surface):
                 else:
                     if sprite.rect.y >= 471:
                         blackPawnAtEnd.append(sprite)
+
+        chessTilesSprintTable.draw(screen)
 
         pawnsSprintTable.draw(screen)
 

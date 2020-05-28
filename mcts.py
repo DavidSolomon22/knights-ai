@@ -15,7 +15,7 @@ class Stat(object):
 # TODO
 class UCT(object):
     def __init__(self, board):
-        self.board = board
+        # self.board = board
         self.history = []
         self.stats = {}
 

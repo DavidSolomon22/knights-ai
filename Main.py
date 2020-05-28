@@ -1,6 +1,7 @@
 import pygame
 import Game
 import mcts
+import GameWithAI
 
 pygame.init()
 
@@ -33,14 +34,18 @@ def main_menu():
         screen.fill((0, 0, 0))
         screen.blit(menuBackground, (0, 0))
         gameName = draw_text('KNIGHTS', 'gameTitleFont.ttf', 80, blackColor, screen, 50, 50)
-        menuPlay = draw_text('Play', 'menuFont.otf', 45, blackColor, screen, 100, 220)
-        menuExit = draw_text('Exit', 'menuFont.otf', 45, blackColor, screen, 100, 340)
+        menuPlay = draw_text('Play', 'menuFont.otf', 45, blackColor, screen, 80, 220)
+        menuPlayWithAI = draw_text('Play With AI', 'menuFont.otf', 45, blackColor, screen, 80, 340)
+        menuExit = draw_text('Exit', 'menuFont.otf', 45, blackColor, screen, 80, 460)
 
         mx, my = pygame.mouse.get_pos()
 
         if menuPlay.collidepoint((mx, my)):
             if click:
                 Game.drawChessBoardWithPawns(800, 600, screen)
+        if menuPlayWithAI.collidepoint((mx, my)):
+            if click:
+                GameWithAI.drawChessBoardWithPawns(800, 600, screen)
         if menuExit.collidepoint((mx, my)):
             if click:
                 pygame.quit()

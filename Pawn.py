@@ -17,8 +17,8 @@ class Pawn(pygame.sprite.Sprite):
 
         self.rect = self.image.get_rect()
 
-        self.rect.x
-        self.rect.y
+        # self.rect.x
+        # self.rect.y
 
     def setPawnPosition(self, mx, my):
         self.rect.x = mx
