@@ -69,17 +69,41 @@ class UCT(object):
         #         1)  # to bedzie oznaczac gracza ktorego jest ruch w tym stanie (1, 2)
         # pass
 
-    def check_possible_double_jumps(self, legal_actions_list, pawnIndex, state):
-        # if (state[pawnIndex + 16] == 0) and (state[pawnIndex + 8] != 0):
-        #     legal_actions_list.append((pawnIndex, pawnIndex + 16))
-        #     self.check_possible_double_jumps(legal_actions_list, pawnIndex + 16, state)
-        if (state[pawnIndex + 2] == 0) and (state[pawnIndex + 1] != 0) and (((pawnIndex + 2) % 8) != 0) and (((pawnIndex + 2) % 8) != 1):
-            legal_actions_list.append((pawnIndex, pawnIndex + 2))
-            self.check_possible_double_jumps(legal_actions_list, (pawnIndex + 2), state)
-        if (state[pawnIndex - 2] == 0) and (state[pawnIndex - 1] != 0) and (((pawnIndex - 2) % 8) != 7) and (((pawnIndex - 2) % 8) != 6):
-            legal_actions_list.append((pawnIndex, pawnIndex - 2))
-            self.check_possible_double_jumps(legal_actions_list, pawnIndex - 2, state)
+    def check_possible_double_jumps(self, legal_actions_list, pawnIndex, state, startingIndex):
+        # if state[pawnIndex + 16] != None:
+        if pawnIndex < 48:
+            if ( state[pawnIndex + 16] == 0):
+                if (state[pawnIndex + 8] != 0):
+                    legal_actions_list.append((startingIndex, pawnIndex + 16))
+                    self.check_possible_double_jumps(legal_actions_list, pawnIndex + 16, state, startingIndex)
 
+
+        if (pawnIndex + 2) != startingIndex:
+            if pawnIndex < 63:
+                if (state[pawnIndex + 2] == 0):
+                    if (state[pawnIndex + 1] != 0):
+                        if (((pawnIndex + 2) % 8) != 1):
+                            if (((pawnIndex + 2) % 8) != 0):
+                                legal_actions_list.append((startingIndex, pawnIndex + 2))
+                                self.check_possible_double_jumps(legal_actions_list, (pawnIndex + 2), state, startingIndex)
+                else:
+                    pass
+            else:
+                pass
+        elif (pawnIndex - 2) != startingIndex:
+            if pawnIndex > 1:
+                if (state[pawnIndex - 2] == 0):
+                    if (state[pawnIndex - 1] != 0):
+                        if (((pawnIndex - 2) % 8) != 7):
+                            if (((pawnIndex - 2) % 8) != 6):
+                                legal_actions_list.append((startingIndex, pawnIndex - 2))
+                                self.check_possible_double_jumps(legal_actions_list, pawnIndex - 2, state,startingIndex)
+                else:
+                    pass
+            else:
+                pass
+        else:
+            pass
 
     # TODO: funkcja ktora zwraca legalne ruchy z danego stanu
     def legal_actions(self, state):
@@ -95,11 +119,12 @@ class UCT(object):
                     if (state[index - 1] == 0) and ((index % 8) != 0):
                         legal_actions_list.append((index, index - 1))
                         # print(index, index - 1)
-                    if state[index + 8] == 0:
-                        legal_actions_list.append((index, index + 8))
-                        # print('ruch do przodu',index, index + 8)
+                    if index < 48:
+                        if state[index + 8] == 0:
+                            legal_actions_list.append((index, index + 8))
+                            # print('ruch do przodu',index, index + 8)
 
-                    self.check_possible_double_jumps(legal_actions_list, index, state)
+                    self.check_possible_double_jumps(legal_actions_list, index, state, index)
 
                     # #calculating the number of max number of jumps
                     # max_number_of_jumps_down = int(((56 + (index % 8)) - index) / 16)
@@ -112,15 +137,12 @@ class UCT(object):
                     #     elif state[index + (8 * jumpIndex)] == 0 and :
                     #         pass
 
-
-
                     # print(index, max_number_of_jumps_down)
                     print(legal_actions_list)
         else:
             for pawn in state[48:64]:
-                print('White',pawn)
+                print('White', pawn)
                 pass
-
 
         # return actions
         # przykladowa zwrocona wartosc przy inpucie (state) wygladajacym jak w powyzszej funkcji
@@ -155,8 +177,9 @@ class UCT(object):
         pass
 
     def update(self, chessTilesSprintTable: pygame.sprite.Group, pawnsSprintTable: pygame.sprite.Group,
-                         roundIndex):
-        self.history.append(self.to_compact_state(chessTilesSprintTable,pawnsSprintTable,roundIndex))
+               roundIndex):
+        self.history.append(self.to_compact_state(chessTilesSprintTable, pawnsSprintTable, roundIndex))
+
     # TODO
     def get_action(self):
         self.max_depth = 0

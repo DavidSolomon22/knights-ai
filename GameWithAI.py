@@ -4,6 +4,7 @@ import ChessBoardTile
 import time
 import  mcts
 import random
+import sys
 
 def createChessboard(width, height):
     whiteTileColor = (232, 235, 239)
@@ -89,6 +90,7 @@ def movePlayerWithAI(pawnsSprintTable: pygame.sprite.Group):
 def drawChessBoardWithPawns(screenWidth, screenHeight, screen: pygame.Surface):
     pygame.init()
 
+    sys.setrecursionlimit(4000)
     # uzupełnić parametry
     UCT = mcts.UCT()
 
@@ -125,14 +127,14 @@ def drawChessBoardWithPawns(screenWidth, screenHeight, screen: pygame.Surface):
         # To powinno wystarczyc do implementacji ruchu komputera
         if roundIndex % 2 == 1:
             state = (
-                  2, 2, 2, 2, 2, 2, 2, 2,  # 0 - 7
-                  0, 2, 2, 2, 2, 2, 2, 2,  # 8 - 15
-                  0, 0, 0, 0, 0, 0, 0, 0,  # 16 - 23
+                  0, 2, 2, 2, 2, 2, 2, 2,  # 0 - 7
+                  2, 2, 0, 2, 2, 2, 2, 2,  # 8 - 15
+                  0, 0, 1, 0, 0, 0, 0, 0,  # 16 - 23
                   0, 0, 0, 0, 0, 0, 0, 0,  # 24 - 31
-                  0, 0, 0, 0, 0, 0, 0, 0,  # 32 - 39
-                  2, 1, 0, 1, 0, 0, 0, 0,  # 40 - 47
-                  1, 0, 1, 0, 1, 1, 1, 1,  # 48 - 55
-                  1, 1, 1, 1, 1, 1, 1, 1,  # 56 - 63
+                  0, 0, 1, 0, 0, 0, 0, 0,  # 32 - 39
+                  0, 0, 0, 1, 0, 0, 0, 0,  # 40 - 47
+                  1, 0, 1, 1, 1, 1, 0, 1,  # 48 - 55
+                  1, 1, 1, 1, 1, 1, 0, 2,  # 56 - 63
                   2)
 
         #     state = UCT.to_compact_state(chessTilesSprintTable,pawnsSprintTable,roundIndex)
