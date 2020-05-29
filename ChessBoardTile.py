@@ -36,3 +36,13 @@ class ChessBoardTile(pygame.sprite.Sprite):
                     (self.getTileCenterXForDrawingPawn(pawnSprint), self.getTileCenterYForDrawingPawn(pawnSprint))):
                 return False
         return True
+
+    def checkState(self, pawnsSprintTable: pygame.sprite.Group):
+        for pawnSprint in pawnsSprintTable:
+            if pawnSprint.rect.collidepoint(
+                    (self.getTileCenterXForDrawingPawn(pawnSprint), self.getTileCenterYForDrawingPawn(pawnSprint))):
+                if pawnSprint.color == 'white':
+                    return 1
+                elif pawnSprint.color == 'black':
+                    return 2
+        return 0

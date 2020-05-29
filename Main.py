@@ -26,7 +26,8 @@ def draw_text(text, font, fontSize, color, surface, x, y):
 
 click = False
 
-uct = mcts.UCTWins('tutaj przekazac obiekt ten z poczatkowym stanem gry w pygame, ktory mamy przelozyc na tablice 1d')
+# uct = mcts.UCTWins('tutaj przekazac obiekt ten z poczatkowym stanem gry w pygame, ktory mamy przelozyc na tablice 1d')
+
 
 def main_menu():
     while True:

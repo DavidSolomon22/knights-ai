@@ -1,4 +1,5 @@
 import time
+import pygame
 
 
 class Stat(object):
@@ -14,7 +15,7 @@ class Stat(object):
 
 # TODO
 class UCT(object):
-    def __init__(self, board):
+    def __init__(self):
         # self.board = board
         self.history = []
         self.stats = {}
@@ -28,26 +29,103 @@ class UCT(object):
 
     # TODO: przekazemy tutaj te sprite'y (nie wiem jak to sie nazywa) tutaj i zamieniamy je na tablice 1-wymiarowa
     # TODO: (2, 2, ..., 0, 0, ..., 1, 1)
-    def to_compact_state(self, board):
+    def to_compact_state(self, chessTilesSprintTable: pygame.sprite.Group, pawnsSprintTable: pygame.sprite.Group,
+                         roundIndex):
+
+        boardList = []
+
+        # filling list which will be later transformated to tuple
+        for tile in chessTilesSprintTable:
+            if tile.checkState(pawnsSprintTable) == 1:
+                boardList.append(1)
+            elif tile.checkState(pawnsSprintTable) == 2:
+                boardList.append(2)
+            else:
+                boardList.append(0)
+
+        # appending sitting
+        if roundIndex % 2 == 0:
+            boardList.append(1)
+        else:
+            boardList.append(2)
+
+        # transformating list to tuple
+        board_in_compact_state = tuple(boardList)
+
+        print(board_in_compact_state)
+
+        return board_in_compact_state
+
         # return state
         # przykladowa zwrocona wartosc
-        return (2, 2, 2, 2, 2, 2, 2, 2,  # 0 - 7
-                2, 2, 2, 2, 2, 2, 2, 2,  # 8 - 15
-                0, 0, 0, 0, 0, 0, 0, 0,  # 16 - 23
-                0, 0, 0, 0, 0, 0, 0, 0,  # 24 - 31
-                0, 0, 0, 0, 0, 0, 0, 0,  # 32 - 39
-                0, 0, 0, 0, 0, 0, 0, 0,  # 40 - 47
-                1, 1, 1, 1, 1, 1, 1, 1,  # 48 - 55
-                1, 1, 1, 1, 1, 1, 1, 1,  # 56 - 63
-                1)  # to bedzie oznaczac gracza ktorego jest ruch w tym stanie (1, 2)
-        pass
+        # return (2, 2, 2, 2, 2, 2, 2, 2,  # 0 - 7
+        #         2, 2, 2, 2, 2, 2, 2, 2,  # 8 - 15
+        #         0, 0, 0, 0, 0, 0, 0, 0,  # 16 - 23
+        #         0, 0, 0, 0, 0, 0, 0, 0,  # 24 - 31
+        #         0, 0, 0, 0, 0, 0, 0, 0,  # 32 - 39
+        #         0, 0, 0, 0, 0, 0, 0, 0,  # 40 - 47
+        #         1, 1, 1, 1, 1, 1, 1, 1,  # 48 - 55
+        #         1, 1, 1, 1, 1, 1, 1, 1,  # 56 - 63
+        #         1)  # to bedzie oznaczac gracza ktorego jest ruch w tym stanie (1, 2)
+        # pass
+
+    def check_possible_double_jumps(self, legal_actions_list, pawnIndex, state):
+        # if (state[pawnIndex + 16] == 0) and (state[pawnIndex + 8] != 0):
+        #     legal_actions_list.append((pawnIndex, pawnIndex + 16))
+        #     self.check_possible_double_jumps(legal_actions_list, pawnIndex + 16, state)
+        if (state[pawnIndex + 2] == 0) and (state[pawnIndex + 1] != 0) and (((pawnIndex + 2) % 8) != 0) and (((pawnIndex + 2) % 8) != 1):
+            legal_actions_list.append((pawnIndex, pawnIndex + 2))
+            self.check_possible_double_jumps(legal_actions_list, (pawnIndex + 2), state)
+        if (state[pawnIndex - 2] == 0) and (state[pawnIndex - 1] != 0) and (((pawnIndex - 2) % 8) != 7) and (((pawnIndex - 2) % 8) != 6):
+            legal_actions_list.append((pawnIndex, pawnIndex - 2))
+            self.check_possible_double_jumps(legal_actions_list, pawnIndex - 2, state)
+
 
     # TODO: funkcja ktora zwraca legalne ruchy z danego stanu
     def legal_actions(self, state):
+
+        legal_actions_list = []
+
+        if state[64] == 2:
+            for index, pawn in enumerate(state[:64]):
+                if pawn == 2:
+                    if (state[index + 1] == 0) and ((index + 1) % 8 != 0):
+                        legal_actions_list.append((index, index + 1))
+                        # print(index, index + 1)
+                    if (state[index - 1] == 0) and ((index % 8) != 0):
+                        legal_actions_list.append((index, index - 1))
+                        # print(index, index - 1)
+                    if state[index + 8] == 0:
+                        legal_actions_list.append((index, index + 8))
+                        # print('ruch do przodu',index, index + 8)
+
+                    self.check_possible_double_jumps(legal_actions_list, index, state)
+
+                    # #calculating the number of max number of jumps
+                    # max_number_of_jumps_down = int(((56 + (index % 8)) - index) / 16)
+                    #
+                    # #max_number_of_jumps_down +1 because it not includes last value
+                    # for jumpIndex in range(max_number_of_jumps_down + 1):
+                    #     print("jumpIndex",jumpIndex)
+                    #     if jumpIndex == 0:
+                    #         if state[index]
+                    #     elif state[index + (8 * jumpIndex)] == 0 and :
+                    #         pass
+
+
+
+                    # print(index, max_number_of_jumps_down)
+                    print(legal_actions_list)
+        else:
+            for pawn in state[48:64]:
+                print('White',pawn)
+                pass
+
+
         # return actions
         # przykladowa zwrocona wartosc przy inpucie (state) wygladajacym jak w powyzszej funkcji
-        return [(48, 40), (49, 41), (50, 42), (51, 43), (52, 44), (53, 45), (54, 46), (55, 47)]
-        pass
+        # return [(48, 40), (49, 41), (50, 42), (51, 43), (52, 44), (53, 45), (54, 46), (55, 47)]
+        # pass
 
     # TODO: funkcja ktora zwraca z danego stanu oraz ruchu, stan nastepujacy po tym ruchu
     def next_state(self, history, action):
@@ -76,9 +154,9 @@ class UCT(object):
         return 1
         pass
 
-    def update(self, board):
-        self.history.append(self.to_compact_state(board))
-
+    def update(self, chessTilesSprintTable: pygame.sprite.Group, pawnsSprintTable: pygame.sprite.Group,
+                         roundIndex):
+        self.history.append(self.to_compact_state(chessTilesSprintTable,pawnsSprintTable,roundIndex))
     # TODO
     def get_action(self):
         self.max_depth = 0
@@ -144,10 +222,12 @@ class UCTWins(UCT):
     name = "jrb.mcts.uct"
     action_template = "{action}: {percent:.2f}% ({wins} / {plays})"
 
-    def __init__(self, board):
-        super(UCTWins, self).__init__(board)
+    # def __init__(self, board):
+    #     super(UCTWins, self).__init__(board)
+
+    def __init__(self):
+        super(UCTWins, self).__init__()
 
     # TODO
     def calculate_action_values(self, history, player, legal):
-
         pass

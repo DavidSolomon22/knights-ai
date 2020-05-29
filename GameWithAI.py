@@ -75,6 +75,7 @@ def fromCompactState(board):
 
 
 def movePlayerWithAI(pawnsSprintTable: pygame.sprite.Group):
+
     randomPawn = random.choice(pawnsSprintTable.sprites())
 
     while randomPawn.color != 'black':
@@ -89,7 +90,8 @@ def drawChessBoardWithPawns(screenWidth, screenHeight, screen: pygame.Surface):
     pygame.init()
 
     # uzupełnić parametry
-    # UCT = mcts.UCT()
+    UCT = mcts.UCT()
+
 
     chessTilesSprintTable = createChessboard(screenWidth, screenHeight)
 
@@ -122,7 +124,20 @@ def drawChessBoardWithPawns(screenWidth, screenHeight, screen: pygame.Surface):
 
         # To powinno wystarczyc do implementacji ruchu komputera
         if roundIndex % 2 == 1:
-            movePlayerWithAI(pawnsSprintTable)
+            state = (
+                  2, 2, 2, 2, 2, 2, 2, 2,  # 0 - 7
+                  0, 2, 2, 2, 2, 2, 2, 2,  # 8 - 15
+                  0, 0, 0, 0, 0, 0, 0, 0,  # 16 - 23
+                  0, 0, 0, 0, 0, 0, 0, 0,  # 24 - 31
+                  0, 0, 0, 0, 0, 0, 0, 0,  # 32 - 39
+                  2, 1, 0, 1, 0, 0, 0, 0,  # 40 - 47
+                  1, 0, 1, 0, 1, 1, 1, 1,  # 48 - 55
+                  1, 1, 1, 1, 1, 1, 1, 1,  # 56 - 63
+                  2)
+
+        #     state = UCT.to_compact_state(chessTilesSprintTable,pawnsSprintTable,roundIndex)
+            UCT.legal_actions(state)
+            # movePlayerWithAI(pawnsSprintTable)
             roundIndex += 1
 
         for pawnSprite in pawnsSprintTable:
@@ -133,11 +148,6 @@ def drawChessBoardWithPawns(screenWidth, screenHeight, screen: pygame.Surface):
                             chosenPawn = True
                             clickedPawn = pawnSprite
                             clickedPawn.PawnSelected()
-                    # else:
-                    #     if pawnSprite.color == 'black':
-                    #         chosenPawn = True
-                    #         clickedPawn = pawnSprite
-                    #         clickedPawn.PawnSelected()
 
         displayPlayerName(roundIndex, screen)
 
