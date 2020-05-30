@@ -69,35 +69,77 @@ class UCT(object):
         #         1)  # to bedzie oznaczac gracza ktorego jest ruch w tym stanie (1, 2)
         # pass
 
-    def check_possible_double_jumps(self, legal_actions_list, pawnIndex, state, startingIndex):
-        # if state[pawnIndex + 16] != None:
+    def check_possible_double_jumps_for_black_pawns(self, legal_actions_list, pawnIndex, state, startingIndex, previousIndex):
         if pawnIndex < 48:
-            if ( state[pawnIndex + 16] == 0):
-                if (state[pawnIndex + 8] != 0):
+            if state[pawnIndex + 16] == 0:
+                if state[pawnIndex + 8] != 0:
                     legal_actions_list.append((startingIndex, pawnIndex + 16))
-                    self.check_possible_double_jumps(legal_actions_list, pawnIndex + 16, state, startingIndex)
+                    self.check_possible_double_jumps_for_black_pawns(legal_actions_list, pawnIndex + 16, state, startingIndex,
+                                                     pawnIndex)
 
-
-        if (pawnIndex + 2) != startingIndex:
-            if pawnIndex < 63:
-                if (state[pawnIndex + 2] == 0):
-                    if (state[pawnIndex + 1] != 0):
-                        if (((pawnIndex + 2) % 8) != 1):
-                            if (((pawnIndex + 2) % 8) != 0):
+        if ((pawnIndex + 2) != startingIndex) and ((pawnIndex + 2) != previousIndex):
+            if pawnIndex < 62:
+                if state[pawnIndex + 2] == 0:
+                    if state[pawnIndex + 1] != 0:
+                        if ((pawnIndex + 2) % 8) != 1:
+                            if ((pawnIndex + 2) % 8) != 0:
                                 legal_actions_list.append((startingIndex, pawnIndex + 2))
-                                self.check_possible_double_jumps(legal_actions_list, (pawnIndex + 2), state, startingIndex)
+                                self.check_possible_double_jumps_for_black_pawns(legal_actions_list, (pawnIndex + 2), state,
+                                                                 startingIndex, pawnIndex)
                 else:
                     pass
             else:
                 pass
-        elif (pawnIndex - 2) != startingIndex:
+        if ((pawnIndex - 2) != startingIndex) and ((pawnIndex - 2) != previousIndex):
             if pawnIndex > 1:
-                if (state[pawnIndex - 2] == 0):
-                    if (state[pawnIndex - 1] != 0):
-                        if (((pawnIndex - 2) % 8) != 7):
-                            if (((pawnIndex - 2) % 8) != 6):
+                if state[pawnIndex - 2] == 0:
+                    if state[pawnIndex - 1] != 0:
+                        if ((pawnIndex - 2) % 8) != 7:
+                            if ((pawnIndex - 2) % 8) != 6:
                                 legal_actions_list.append((startingIndex, pawnIndex - 2))
-                                self.check_possible_double_jumps(legal_actions_list, pawnIndex - 2, state,startingIndex)
+                                self.check_possible_double_jumps_for_black_pawns(legal_actions_list, pawnIndex - 2, state,
+                                                                 startingIndex, pawnIndex)
+                else:
+                    pass
+            else:
+                pass
+        else:
+            pass
+
+    def check_possible_double_jumps_for_white_pawns(self, legal_actions_list, pawnIndex, state, startingIndex,
+                                                    previousIndex):
+        if pawnIndex < 48:
+            if state[pawnIndex + 16] == 0:
+                if state[pawnIndex + 8] != 0:
+                    legal_actions_list.append((startingIndex, pawnIndex + 16))
+                    self.check_possible_double_jumps_for_black_pawns(legal_actions_list, pawnIndex + 16, state,
+                                                                     startingIndex,
+                                                                     pawnIndex)
+
+        if ((pawnIndex + 2) != startingIndex) and ((pawnIndex + 2) != previousIndex):
+            if pawnIndex < 62:
+                if state[pawnIndex + 2] == 0:
+                    if state[pawnIndex + 1] != 0:
+                        if ((pawnIndex + 2) % 8) != 1:
+                            if ((pawnIndex + 2) % 8) != 0:
+                                legal_actions_list.append((startingIndex, pawnIndex + 2))
+                                self.check_possible_double_jumps_for_black_pawns(legal_actions_list, (pawnIndex + 2),
+                                                                                 state,
+                                                                                 startingIndex, pawnIndex)
+                else:
+                    pass
+            else:
+                pass
+        if ((pawnIndex - 2) != startingIndex) and ((pawnIndex - 2) != previousIndex):
+            if pawnIndex > 1:
+                if state[pawnIndex - 2] == 0:
+                    if state[pawnIndex - 1] != 0:
+                        if ((pawnIndex - 2) % 8) != 7:
+                            if ((pawnIndex - 2) % 8) != 6:
+                                legal_actions_list.append((startingIndex, pawnIndex - 2))
+                                self.check_possible_double_jumps_for_black_pawns(legal_actions_list, pawnIndex - 2,
+                                                                                 state,
+                                                                                 startingIndex, pawnIndex)
                 else:
                     pass
             else:
@@ -113,36 +155,35 @@ class UCT(object):
         if state[64] == 2:
             for index, pawn in enumerate(state[:64]):
                 if pawn == 2:
-                    if (state[index + 1] == 0) and ((index + 1) % 8 != 0):
-                        legal_actions_list.append((index, index + 1))
-                        # print(index, index + 1)
-                    if (state[index - 1] == 0) and ((index % 8) != 0):
-                        legal_actions_list.append((index, index - 1))
-                        # print(index, index - 1)
-                    if index < 48:
+                    if index != 63:
+                        if (state[index + 1] == 0) and ((index + 1) % 8 != 0):
+                            legal_actions_list.append((index, index + 1))
+                    if index != 0:
+                        if (state[index - 1] == 0) and ((index % 8) != 0):
+                            legal_actions_list.append((index, index - 1))
+                    if index < 56:
                         if state[index + 8] == 0:
                             legal_actions_list.append((index, index + 8))
-                            # print('ruch do przodu',index, index + 8)
 
-                    self.check_possible_double_jumps(legal_actions_list, index, state, index)
+                    self.check_possible_double_jumps_for_black_pawns(legal_actions_list, index, state, index, index)
 
-                    # #calculating the number of max number of jumps
-                    # max_number_of_jumps_down = int(((56 + (index % 8)) - index) / 16)
-                    #
-                    # #max_number_of_jumps_down +1 because it not includes last value
-                    # for jumpIndex in range(max_number_of_jumps_down + 1):
-                    #     print("jumpIndex",jumpIndex)
-                    #     if jumpIndex == 0:
-                    #         if state[index]
-                    #     elif state[index + (8 * jumpIndex)] == 0 and :
-                    #         pass
-
-                    # print(index, max_number_of_jumps_down)
                     print(legal_actions_list)
         else:
-            for pawn in state[48:64]:
-                print('White', pawn)
-                pass
+            for index, pawn in enumerate(state[:64]):
+                if pawn == 2:
+                    if index != 63:
+                        if (state[index + 1] == 0) and ((index + 1) % 8 != 0):
+                            legal_actions_list.append((index, index + 1))
+                    if index != 0:
+                        if (state[index - 1] == 0) and ((index % 8) != 0):
+                            legal_actions_list.append((index, index - 1))
+                    if index < 56:
+                        if state[index - 8] == 0:
+                            legal_actions_list.append((index, index + 8))
+
+                    self.check_possible_double_jumps_for_white_pawns(legal_actions_list, index, state, index, index)
+
+                    print(legal_actions_list)
 
         # return actions
         # przykladowa zwrocona wartosc przy inpucie (state) wygladajacym jak w powyzszej funkcji
