@@ -108,11 +108,11 @@ class UCT(object):
 
     def check_possible_double_jumps_for_white_pawns(self, legal_actions_list, pawnIndex, state, startingIndex,
                                                     previousIndex):
-        if pawnIndex < 48:
-            if state[pawnIndex + 16] == 0:
-                if state[pawnIndex + 8] != 0:
-                    legal_actions_list.append((startingIndex, pawnIndex + 16))
-                    self.check_possible_double_jumps_for_black_pawns(legal_actions_list, pawnIndex + 16, state,
+        if pawnIndex > 15:
+            if state[pawnIndex - 16] == 0:
+                if state[pawnIndex - 8] != 0:
+                    legal_actions_list.append((startingIndex, pawnIndex - 16))
+                    self.check_possible_double_jumps_for_white_pawns(legal_actions_list, pawnIndex - 16, state,
                                                                      startingIndex,
                                                                      pawnIndex)
 
@@ -123,7 +123,7 @@ class UCT(object):
                         if ((pawnIndex + 2) % 8) != 1:
                             if ((pawnIndex + 2) % 8) != 0:
                                 legal_actions_list.append((startingIndex, pawnIndex + 2))
-                                self.check_possible_double_jumps_for_black_pawns(legal_actions_list, (pawnIndex + 2),
+                                self.check_possible_double_jumps_for_white_pawns(legal_actions_list, (pawnIndex + 2),
                                                                                  state,
                                                                                  startingIndex, pawnIndex)
                 else:
@@ -137,7 +137,7 @@ class UCT(object):
                         if ((pawnIndex - 2) % 8) != 7:
                             if ((pawnIndex - 2) % 8) != 6:
                                 legal_actions_list.append((startingIndex, pawnIndex - 2))
-                                self.check_possible_double_jumps_for_black_pawns(legal_actions_list, pawnIndex - 2,
+                                self.check_possible_double_jumps_for_white_pawns(legal_actions_list, pawnIndex - 2,
                                                                                  state,
                                                                                  startingIndex, pawnIndex)
                 else:
@@ -170,16 +170,16 @@ class UCT(object):
                     print(legal_actions_list)
         else:
             for index, pawn in enumerate(state[:64]):
-                if pawn == 2:
+                if pawn == 1:
                     if index != 63:
                         if (state[index + 1] == 0) and ((index + 1) % 8 != 0):
                             legal_actions_list.append((index, index + 1))
                     if index != 0:
                         if (state[index - 1] == 0) and ((index % 8) != 0):
                             legal_actions_list.append((index, index - 1))
-                    if index < 56:
+                    if index > 7:
                         if state[index - 8] == 0:
-                            legal_actions_list.append((index, index + 8))
+                            legal_actions_list.append((index, index - 8))
 
                     self.check_possible_double_jumps_for_white_pawns(legal_actions_list, index, state, index, index)
 
