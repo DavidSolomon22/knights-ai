@@ -1,5 +1,7 @@
 import time
 import pygame
+from math import log, sqrt
+from random import choice
 
 
 class Stat(object):
@@ -211,12 +213,24 @@ class UCT(object):
         return 2
         pass
 
-    # TODO: napisac logike ktora zwroci nam zawodnika ktorego jest ruch w danej pozycji
+    # TODO: napisac logike ktora zwroci nam zawodnika ktorego byl ruch w poprzedniej pozycji
     def previous_player(self, state):
         # return 1 lub 2
         return 1
         pass
 
+    # TODO: funkcja ktora zwraca nam info, czy gra zostala juz zakonczona (nie wazne ktory gracz wygral)
+    def is_ended(self, state):
+        # return True lub False
+        pass
+
+    # TODO: funkcja ktora zwraca nam info ktory konkretnie gracz wygral
+    def end_values(self, state):
+        # return {1: 1, 2: 0} lub return {1: 0, 2: 1}
+        pass
+
+    # TODO: update w sumie bedzie musial zostac wykonany po tym jak my zrobimy ruch (czyli przed get_action), oraz
+    # TODO: po tym jak komputer zrobi ruch (czyli po get_action)
     def update(self, chessTilesSprintTable: pygame.sprite.Group, pawnsSprintTable: pygame.sprite.Group,
                roundIndex):
         self.history.append(self.to_compact_state(chessTilesSprintTable, pawnsSprintTable, roundIndex))
@@ -231,8 +245,7 @@ class UCT(object):
         player = self.current_player(state)
         legal = self.legal_actions(state)
 
-        # TODO: trzeba przekminic, jak inaczej zwracac te obiekty jsonowe:
-        # TODO: czy tablice z ruchami, czy koncowy stan
+        # TODO: przekminic czy zostawic te logike
         # if not legal:
         #     return {
         #         'type': 'action',
@@ -255,8 +268,14 @@ class UCT(object):
         print(self.data['games'], self.data['time'])
         print("Maximum depth searched:", self.max_depth)
 
-        # TODO: trzeba przekminic, jak inaczej zwracac te obiekty jsonowe:
-        # TODO: czy tablice z ruchami, czy koncowy stan
+        self.data['actions'] = self.calculate_action_values(self.history, player, legal)
+        for m in self.data['actions']:
+            print(self.action_template.format(**m))
+
+        # TODO: Trzeba przekminic, jak inaczej zwracac te obiekty jsonowe:
+        # TODO: czy tablice z ruchami, czy koncowy stan.
+        # TODO: Raczej bym zwracal nasz koncowy stan ktory obliczylismy (return self.history[-1]), ktory bedziemy
+        # TODO: musieli zmapowac na ruch komputera na szachownicy.
         # return {
         #     'type': 'action',
         #     'message': self.board.to_json_action(self.data['actions'][0]['action']),
@@ -265,7 +284,6 @@ class UCT(object):
 
         pass
 
-    # TODO
     def run_simulation(self):
         c, stats = self.C, self.stats
 
@@ -275,23 +293,56 @@ class UCT(object):
 
         expand = True
         for t in range(1, self.max_actions + 1):
-            legal = self.legal_actions(state)  # TODO: patrz rozkmine przy funkcji
+            legal = self.legal_actions(state)
             actions_states = [(a, self.next_state(history_copy, a)) for a in legal]
 
-        pass
+            if expand and not all(S in stats for a, S in actions_states):
+                stats.update((S, Stat()) for a, S in actions_states if S not in stats)
+                expand = False
+                if t > self.max_depth:
+                    self.max_depth = t
+
+            if expand:
+                actions_states = [(a, S, stats[S]) for a, S in actions_states]
+                log_total = log(sum(e.visits for a, S, e in actions_states) or 1)
+                values_actions = [
+                    (a, S, (e.value / (e.visits or 1)) + c * sqrt(log_total / (e.visits or 1)))
+                    for a, S, e in actions_states
+                ]
+                max_value = max(v for _, _, v in values_actions)
+                actions_states = [(a, S) for a, S, v in values_actions if v == max_value]
+
+            action, state = choice(actions_states)
+            visited_states.append(state)
+            history_copy.append(state)
+
+            if self.board.is_ended(state):
+                break
+
+        end_values = self.end_values(state)
+        for state in visited_states:
+            if state not in stats:
+                continue
+            S = stats[state]
+            S.visits += 1
+            S.value += end_values[self.previous_player(state)]
 
 
-# TODO
 class UCTWins(UCT):
     name = "jrb.mcts.uct"
     action_template = "{action}: {percent:.2f}% ({wins} / {plays})"
 
-    # def __init__(self, board):
-    #     super(UCTWins, self).__init__(board)
-
     def __init__(self):
         super(UCTWins, self).__init__()
 
-    # TODO
     def calculate_action_values(self, history, player, legal):
-        pass
+        actions_states = ((a, self.next_state(history, a)) for a in legal)
+        return sorted(
+            ({'action': a,
+              'percent': 100 * self.stats[S].value / (self.stats[S].visits or 1),
+              'wins': self.stats[S].value,
+              'plays': self.stats[S].visits}
+             for a, S in actions_states),
+            key=lambda x: (x['percent'], x['plays']),
+            reverse=True
+        )
