@@ -15,7 +15,6 @@ class Stat(object):
         return u"Stat(value={}, visits={})".format(self.value, self.visits)
 
 
-# TODO
 class UCT(object):
     def __init__(self):
         self.history = []
@@ -30,10 +29,8 @@ class UCT(object):
 
     def to_compact_state(self, chessTilesSprintTable: pygame.sprite.Group, pawnsSprintTable: pygame.sprite.Group,
                          roundIndex):
-
         boardList = []
 
-        # filling list which will be later transformated to tuple
         for tile in chessTilesSprintTable:
             if tile.checkState(pawnsSprintTable) == 1:
                 boardList.append(1)
@@ -42,31 +39,13 @@ class UCT(object):
             else:
                 boardList.append(0)
 
-        # appending sitting
         if roundIndex % 2 == 0:
             boardList.append(1)
         else:
             boardList.append(2)
 
-        # transformating list to tuple
         board_in_compact_state = tuple(boardList)
-
-        # print(board_in_compact_state)
-
         return board_in_compact_state
-
-        # return state
-        # przykladowa zwrocona wartosc
-        # return (2, 2, 2, 2, 2, 2, 2, 2,  # 0 - 7
-        #         2, 2, 2, 2, 2, 2, 2, 2,  # 8 - 15
-        #         0, 0, 0, 0, 0, 0, 0, 0,  # 16 - 23
-        #         0, 0, 0, 0, 0, 0, 0, 0,  # 24 - 31
-        #         0, 0, 0, 0, 0, 0, 0, 0,  # 32 - 39
-        #         0, 0, 0, 0, 0, 0, 0, 0,  # 40 - 47
-        #         1, 1, 1, 1, 1, 1, 1, 1,  # 48 - 55
-        #         1, 1, 1, 1, 1, 1, 1, 1,  # 56 - 63
-        #         1)  # to bedzie oznaczac gracza ktorego jest ruch w tym stanie (1, 2)
-        # pass
 
     def check_possible_multiple_jumps_for_black_pawns(self, legal_actions_list, pawnIndex, state, startingIndex,
                                                       previousIndex):
@@ -168,8 +147,6 @@ class UCT(object):
                             legal_actions_list.append((index, index + 8))
 
                     self.check_possible_multiple_jumps_for_black_pawns(legal_actions_list, index, state, index, index)
-
-                    # print(legal_actions_list)
         else:
             for index, pawn in enumerate(state[:64]):
                 if pawn == 1:
@@ -185,12 +162,7 @@ class UCT(object):
 
                     self.check_possible_multiple_jumps_for_white_pawns(legal_actions_list, index, state, index, index)
 
-                    # print(legal_actions_list)
         return legal_actions_list
-        # return actions
-        # przykladowa zwrocona wartosc przy inpucie (state) wygladajacym jak w powyzszej funkcji
-        # return [(48, 40), (49, 41), (50, 42), (51, 43), (52, 44), (53, 45), (54, 46), (55, 47)]
-        # pass
 
     def next_state(self, history, action):
 
@@ -263,19 +235,6 @@ class UCT(object):
         player = self.current_player(state)
         legal = self.legal_actions(state)
 
-        # TODO: przekminic czy zostawic te logike
-        # if not legal:
-        #     return {
-        #         'type': 'action',
-        #         'message': None,
-        #         'extras': self.data.copy()}
-        # if len(legal) == 1:
-        #     return {
-        #         'type': 'action',
-        #         'message': self.board.to_json_action(legal[0]),
-        #         'extras': self.data.copy(),
-        #     }
-
         games = 0
         begin = time.time()
         while time.time() - begin < self.calculation_time:
@@ -326,10 +285,7 @@ class UCT(object):
             try:
                 action, state = choice(actions_states)
             except:
-                print("\n\n\n\n\nAn exception occurred\n\n\n\n\n")
-                print(actions_states)
-                print(action)
-                print(state)
+                print("\nAn exception occurred\n")
             visited_states.append(state)
             history_copy.append(state)
 
@@ -345,7 +301,7 @@ class UCT(object):
                 S.visits += 1
                 S.value += end_values[self.previous_player(state)]
             except:
-                print(S)
+                print("\nAn exception occurred\n")
 
 
 class UCTWins(UCT):
