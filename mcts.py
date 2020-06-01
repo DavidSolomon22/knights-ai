@@ -199,17 +199,21 @@ class UCT(object):
         if (state[action[0]] == 0) or (state[action[1]] != 0):
             return None
 
-        print(state)
+        # print(state)
 
         state_as_list = list(state)
 
-        state_as_list[action[0]] = 0
+        if state_as_list[64] == 2:
+            state_as_list[action[0]] = 0
+            state_as_list[action[1]] = 2
 
-        state_as_list[action[1]] = 2
+        elif state_as_list[64] == 1:
+            state_as_list[action[0]] = 0
+            state_as_list[action[1]] = 1
+
+        # print(next_state)
 
         next_state = tuple(state_as_list)
-
-        print(next_state)
 
         return next_state
 
