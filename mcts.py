@@ -18,7 +18,6 @@ class Stat(object):
 # TODO
 class UCT(object):
     def __init__(self):
-        # self.board = board
         self.history = []
         self.stats = {}
 
@@ -29,8 +28,6 @@ class UCT(object):
         self.max_actions = int(1000)
         self.C = float(1.4)
 
-    # TODO: przekazemy tutaj te sprite'y (nie wiem jak to sie nazywa) tutaj i zamieniamy je na tablice 1-wymiarowa
-    # TODO: (2, 2, ..., 0, 0, ..., 1, 1)
     def to_compact_state(self, chessTilesSprintTable: pygame.sprite.Group, pawnsSprintTable: pygame.sprite.Group,
                          roundIndex):
 
@@ -153,7 +150,6 @@ class UCT(object):
         else:
             pass
 
-    # TODO: funkcja ktora zwraca legalne ruchy z danego stanu
     def legal_actions(self, state):
 
         legal_actions_list = []
@@ -196,9 +192,9 @@ class UCT(object):
         # return [(48, 40), (49, 41), (50, 42), (51, 43), (52, 44), (53, 45), (54, 46), (55, 47)]
         # pass
 
-    def next_state(self, action):
+    def next_state(self, history, action):
 
-        state = self.history[-1]
+        state = history[-1]
 
         if (state[action[0]] == 0) or (state[action[1]] != 0):
             return None
@@ -236,7 +232,6 @@ class UCT(object):
     def previous_player(self, state):
         return 3 - state[-1]
 
-    # TODO: funkcja ktora zwraca nam info, czy gra zostala juz zakonczona (nie wazne ktory gracz wygral)
     def is_ended(self, state):
 
         winning_position_for_white = state[:16]
@@ -250,7 +245,6 @@ class UCT(object):
         else:
             return True
 
-    # TODO: funkcja ktora zwraca nam info ktory konkretnie gracz wygral
     def end_values(self, state):
 
         winning_position_for_white = state[:16]
@@ -266,20 +260,14 @@ class UCT(object):
         else:
             return None
 
-    # TODO: update w sumie bedzie musial zostac wykonany po tym jak my zrobimy ruch (czyli przed get_action), oraz
-    # TODO: po tym jak komputer zrobi ruch (czyli po get_action). Przerobic tak, zeby update juz przyjmowal
-    # TODO: compact_state, bo musi tez byc wywolany po zrobieniu ruchu przez komputer (dodac update po wybraniu ruchu,
-    # TODO: w funkcji run_simulation)
     def update(self, state):
         self.history.append(state)
 
-    # TODO
     def get_action(self, chessTilesSprintTable: pygame.sprite.Group, pawnsSprintTable: pygame.sprite.Group,
                    roundIndex):
         self.max_depth = 0
         self.data = {'C': self.C, 'max_actions': self.max_actions, 'name': self.name}
         self.stats.clear()
-
         self.update(self.to_compact_state(chessTilesSprintTable, pawnsSprintTable, roundIndex))
 
         state = self.history[-1]
@@ -311,6 +299,9 @@ class UCT(object):
 
         self.data['actions'] = self.calculate_action_values(self.history, player, legal)
         action = self.data['actions'][0]['action']
+        new_state = self.next_state(self.history, action)
+        self.update(new_state)
+
         for m in self.data['actions']:
             print(self.action_template.format(**m))
 
