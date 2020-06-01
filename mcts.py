@@ -54,7 +54,7 @@ class UCT(object):
         # transformating list to tuple
         board_in_compact_state = tuple(boardList)
 
-        print(board_in_compact_state)
+        # print(board_in_compact_state)
 
         return board_in_compact_state
 
@@ -71,13 +71,15 @@ class UCT(object):
         #         1)  # to bedzie oznaczac gracza ktorego jest ruch w tym stanie (1, 2)
         # pass
 
-    def check_possible_double_jumps_for_black_pawns(self, legal_actions_list, pawnIndex, state, startingIndex, previousIndex):
+    def check_possible_multiple_jumps_for_black_pawns(self, legal_actions_list, pawnIndex, state, startingIndex,
+                                                      previousIndex):
         if pawnIndex < 48:
             if state[pawnIndex + 16] == 0:
                 if state[pawnIndex + 8] != 0:
                     legal_actions_list.append((startingIndex, pawnIndex + 16))
-                    self.check_possible_double_jumps_for_black_pawns(legal_actions_list, pawnIndex + 16, state, startingIndex,
-                                                     pawnIndex)
+                    self.check_possible_multiple_jumps_for_black_pawns(legal_actions_list, pawnIndex + 16, state,
+                                                                       startingIndex,
+                                                                       pawnIndex)
 
         if ((pawnIndex + 2) != startingIndex) and ((pawnIndex + 2) != previousIndex):
             if pawnIndex < 62:
@@ -86,8 +88,9 @@ class UCT(object):
                         if ((pawnIndex + 2) % 8) != 1:
                             if ((pawnIndex + 2) % 8) != 0:
                                 legal_actions_list.append((startingIndex, pawnIndex + 2))
-                                self.check_possible_double_jumps_for_black_pawns(legal_actions_list, (pawnIndex + 2), state,
-                                                                 startingIndex, pawnIndex)
+                                self.check_possible_multiple_jumps_for_black_pawns(legal_actions_list, (pawnIndex + 2),
+                                                                                   state,
+                                                                                   startingIndex, pawnIndex)
                 else:
                     pass
             else:
@@ -99,8 +102,9 @@ class UCT(object):
                         if ((pawnIndex - 2) % 8) != 7:
                             if ((pawnIndex - 2) % 8) != 6:
                                 legal_actions_list.append((startingIndex, pawnIndex - 2))
-                                self.check_possible_double_jumps_for_black_pawns(legal_actions_list, pawnIndex - 2, state,
-                                                                 startingIndex, pawnIndex)
+                                self.check_possible_multiple_jumps_for_black_pawns(legal_actions_list, pawnIndex - 2,
+                                                                                   state,
+                                                                                   startingIndex, pawnIndex)
                 else:
                     pass
             else:
@@ -108,15 +112,15 @@ class UCT(object):
         else:
             pass
 
-    def check_possible_double_jumps_for_white_pawns(self, legal_actions_list, pawnIndex, state, startingIndex,
-                                                    previousIndex):
+    def check_possible_multiple_jumps_for_white_pawns(self, legal_actions_list, pawnIndex, state, startingIndex,
+                                                      previousIndex):
         if pawnIndex > 15:
             if state[pawnIndex - 16] == 0:
                 if state[pawnIndex - 8] != 0:
                     legal_actions_list.append((startingIndex, pawnIndex - 16))
-                    self.check_possible_double_jumps_for_white_pawns(legal_actions_list, pawnIndex - 16, state,
-                                                                     startingIndex,
-                                                                     pawnIndex)
+                    self.check_possible_multiple_jumps_for_white_pawns(legal_actions_list, pawnIndex - 16, state,
+                                                                       startingIndex,
+                                                                       pawnIndex)
 
         if ((pawnIndex + 2) != startingIndex) and ((pawnIndex + 2) != previousIndex):
             if pawnIndex < 62:
@@ -125,9 +129,9 @@ class UCT(object):
                         if ((pawnIndex + 2) % 8) != 1:
                             if ((pawnIndex + 2) % 8) != 0:
                                 legal_actions_list.append((startingIndex, pawnIndex + 2))
-                                self.check_possible_double_jumps_for_white_pawns(legal_actions_list, (pawnIndex + 2),
-                                                                                 state,
-                                                                                 startingIndex, pawnIndex)
+                                self.check_possible_multiple_jumps_for_white_pawns(legal_actions_list, (pawnIndex + 2),
+                                                                                   state,
+                                                                                   startingIndex, pawnIndex)
                 else:
                     pass
             else:
@@ -139,9 +143,9 @@ class UCT(object):
                         if ((pawnIndex - 2) % 8) != 7:
                             if ((pawnIndex - 2) % 8) != 6:
                                 legal_actions_list.append((startingIndex, pawnIndex - 2))
-                                self.check_possible_double_jumps_for_white_pawns(legal_actions_list, pawnIndex - 2,
-                                                                                 state,
-                                                                                 startingIndex, pawnIndex)
+                                self.check_possible_multiple_jumps_for_white_pawns(legal_actions_list, pawnIndex - 2,
+                                                                                   state,
+                                                                                   startingIndex, pawnIndex)
                 else:
                     pass
             else:
@@ -167,9 +171,9 @@ class UCT(object):
                         if state[index + 8] == 0:
                             legal_actions_list.append((index, index + 8))
 
-                    self.check_possible_double_jumps_for_black_pawns(legal_actions_list, index, state, index, index)
+                    self.check_possible_multiple_jumps_for_black_pawns(legal_actions_list, index, state, index, index)
 
-                    print(legal_actions_list)
+                    # print(legal_actions_list)
         else:
             for index, pawn in enumerate(state[:64]):
                 if pawn == 1:
@@ -183,51 +187,85 @@ class UCT(object):
                         if state[index - 8] == 0:
                             legal_actions_list.append((index, index - 8))
 
-                    self.check_possible_double_jumps_for_white_pawns(legal_actions_list, index, state, index, index)
+                    self.check_possible_multiple_jumps_for_white_pawns(legal_actions_list, index, state, index, index)
 
-                    print(legal_actions_list)
+                    # print(legal_actions_list)
 
         # return actions
         # przykladowa zwrocona wartosc przy inpucie (state) wygladajacym jak w powyzszej funkcji
         # return [(48, 40), (49, 41), (50, 42), (51, 43), (52, 44), (53, 45), (54, 46), (55, 47)]
         # pass
 
-    # TODO: funkcja ktora zwraca z danego stanu oraz ruchu, stan nastepujacy po tym ruchu
-    def next_state(self, history, action):
+    def next_state(self, action):
+
+        state = self.history[-1]
+
+        if (state[action[0]] == 0) or (state[action[1]] != 0):
+            return None
+
+        print(state)
+
+        state_as_list = list(state)
+
+        state_as_list[action[0]] = 0
+
+        state_as_list[action[1]] = 2
+
+        next_state = tuple(state_as_list)
+
+        print(next_state)
+
+        return next_state
+
         # state = history[-1]
         # przykladowa zwrocona wartosc przy inpucie (state, action = (48, 40)) wygladajacym jak w powyzszej funkcji
-        return (2, 2, 2, 2, 2, 2, 2, 2,
-                2, 2, 2, 2, 2, 2, 2, 2,
-                0, 0, 0, 0, 0, 0, 0, 0,
-                0, 0, 0, 0, 0, 0, 0, 0,
-                0, 0, 0, 0, 0, 0, 0, 0,
-                1, 0, 0, 0, 0, 0, 0, 0,  # 40 - 47
-                0, 1, 1, 1, 1, 1, 1, 1,  # 48 - 55
-                1, 1, 1, 1, 1, 1, 1, 1,  # 56 - 63
-                2)  # to bedzie oznaczac gracza ktorego jest ruch w tym stanie (1, 2)
-        pass
+        # return (2, 2, 2, 2, 2, 2, 2, 2,
+        #         2, 2, 2, 2, 2, 2, 2, 2,
+        #         0, 0, 0, 0, 0, 0, 0, 0,
+        #         0, 0, 0, 0, 0, 0, 0, 0,
+        #         0, 0, 0, 0, 0, 0, 0, 0,
+        #         1, 0, 0, 0, 0, 0, 0, 0,  # 40 - 47
+        #         0, 1, 1, 1, 1, 1, 1, 1,  # 48 - 55
+        #         1, 1, 1, 1, 1, 1, 1, 1,  # 56 - 63
+        #         2)  # to bedzie oznaczac gracza ktorego jest ruch w tym stanie (1, 2)
+        # pass
 
-    # TODO: napisac logike ktora zwroci nam zawodnika ktorego jest ruch w danej pozycji
     def current_player(self, state):
-        # return 1 lub 2
-        return 2
-        pass
+        return state[-1]
 
-    # TODO: napisac logike ktora zwroci nam zawodnika ktorego byl ruch w poprzedniej pozycji
     def previous_player(self, state):
-        # return 1 lub 2
-        return 1
-        pass
+        return 3 - state[-1]
 
     # TODO: funkcja ktora zwraca nam info, czy gra zostala juz zakonczona (nie wazne ktory gracz wygral)
     def is_ended(self, state):
-        # return True lub False
-        pass
+
+        winning_position_for_white = state[:16]
+        winning_position_for_black = state[48:64]
+
+        win_for_white = [a for a in winning_position_for_white if a == 1]
+        win_for_black = [a for a in winning_position_for_black if a == 2]
+
+        if (len(win_for_white) != 16) and (len(win_for_black) != 16):
+            return False
+        else:
+            return True
 
     # TODO: funkcja ktora zwraca nam info ktory konkretnie gracz wygral
     def end_values(self, state):
-        # return {1: 1, 2: 0} lub return {1: 0, 2: 1}
-        pass
+
+        winning_position_for_white = state[:16]
+        winning_position_for_black = state[48:64]
+
+        win_for_white = [a for a in winning_position_for_white if a == 1]
+        win_for_black = [a for a in winning_position_for_black if a == 2]
+
+        if len(win_for_white) == 16:
+            return {1: 1, 2: 0}
+        elif len(win_for_black) == 16:
+            return {1: 0, 2: 1}
+        else:
+            return None
+
 
     # TODO: update w sumie bedzie musial zostac wykonany po tym jak my zrobimy ruch (czyli przed get_action), oraz
     # TODO: po tym jak komputer zrobi ruch (czyli po get_action)

@@ -144,7 +144,8 @@ def drawChessBoardWithPawns(screenWidth, screenHeight, screen: pygame.Surface):
                         click = False
                 elif event.button == 3:
                     chosenPawn = False
-                    clickedPawn.PawnUnselected()
+                    if clickedPawn != None:
+                        clickedPawn.PawnUnselected()
                     clickedPawn = None
                     click = False
 

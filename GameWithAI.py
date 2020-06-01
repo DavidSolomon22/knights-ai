@@ -137,9 +137,23 @@ def drawChessBoardWithPawns(screenWidth, screenHeight, screen: pygame.Surface):
                   1, 1, 1, 1, 1, 1, 1, 2,  # 56 - 63
                   1)
 
-        #     state = UCT.to_compact_state(chessTilesSprintTable,pawnsSprintTable,roundIndex)
-            UCT.legal_actions(state)
+            state2 = (
+                1, 1, 1, 1, 1, 1, 1, 1,  # 0 - 7
+                1, 1, 1, 1, 1, 1, 1, 1,  # 8 - 15
+                0, 0, 1, 0, 0, 0, 0, 0,  # 16 - 23
+                0, 0, 0, 0, 0, 0, 0, 0,  # 24 - 31
+                0, 0, 2, 0, 0, 0, 0, 0,  # 32 - 39
+                0, 1, 0, 1, 0, 2, 0, 2,  # 40 - 47
+                2, 1, 2, 2, 2, 2, 2, 2,  # 48 - 55
+                2, 2, 2, 2, 2, 2, 2, 2,  # 56 - 63
+                1)
+            UCT.history.append(state)
+        #   state = UCT.to_compact_state(chessTilesSprintTable,pawnsSprintTable,roundIndex)
+        #   UCT.legal_actions(state)
             # movePlayerWithAI(pawnsSprintTable)
+            # UCT.next_state((0,16))
+            print(UCT.is_ended(state2))
+            print(UCT.end_values(state2))
             roundIndex += 1
 
         for pawnSprite in pawnsSprintTable:
@@ -182,7 +196,8 @@ def drawChessBoardWithPawns(screenWidth, screenHeight, screen: pygame.Surface):
                         click = False
                 elif event.button == 3:
                     chosenPawn = False
-                    clickedPawn.PawnUnselected()
+                    if clickedPawn != None:
+                        clickedPawn.PawnUnselected()
                     clickedPawn = None
                     click = False
 
