@@ -186,7 +186,7 @@ class UCT(object):
                     self.check_possible_multiple_jumps_for_white_pawns(legal_actions_list, index, state, index, index)
 
                     # print(legal_actions_list)
-
+        return legal_actions_list
         # return actions
         # przykladowa zwrocona wartosc przy inpucie (state) wygladajacym jak w powyzszej funkcji
         # return [(48, 40), (49, 41), (50, 42), (51, 43), (52, 44), (53, 45), (54, 46), (55, 47)]

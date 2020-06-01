@@ -67,33 +67,27 @@ def displayPlayerName(roundIndex, screen: pygame.Surface):
         playerText2 = draw_text('Player 2', 'gameTitleFont.ttf', 20, (255, 255, 255), screen, 0, 0)
         return playerText2
 
-# TODO: funkcja, która zwraca pionek do ruszenia po otrzymaniu stanu następnego gry
-def fromCompactState(board):
-    # i will have compactState board
-    # i need to iterate through overy pawn
-    # return Pawn
-    return Pawn()
+def movePlayerWithAI(pawnsSprintTable: pygame.sprite.Group,chessTilesSprintTable: pygame.sprite.Group, action):
 
 
-def movePlayerWithAI(pawnsSprintTable: pygame.sprite.Group):
+    pawnX = chessTilesSprintTable.sprites()[action[0]].getTileCenterXForDrawingPawn(pawnsSprintTable.sprites()[0])
+    pawnY = chessTilesSprintTable.sprites()[action[0]].getTileCenterYForDrawingPawn(pawnsSprintTable.sprites()[0])
 
-    randomPawn = random.choice(pawnsSprintTable.sprites())
+    pawn_X_to_move = chessTilesSprintTable.sprites()[action[1]].getTileCenterXForDrawingPawn(pawnsSprintTable.sprites()[0])
+    pawn_Y_to_move = chessTilesSprintTable.sprites()[action[1]].getTileCenterYForDrawingPawn(pawnsSprintTable.sprites()[0])
 
-    while randomPawn.color != 'black':
-        randomPawn = random.choice(pawnsSprintTable.sprites())
+    # print(pawnX, pawnY)
+    # print(pawn_X_to_move, pawn_Y_to_move)
+    pawn_to_move = [pawn for pawn in pawnsSprintTable if (pawn.rect.x == pawnX) and (pawn.rect.y == pawnY)]
 
-    randomPawn.setPawnPosition(300,300)
-
-
+    if len(pawn_to_move) != 0:
+        pawn_to_move[0].setPawnPosition(pawn_X_to_move,pawn_Y_to_move)
 
 
 def drawChessBoardWithPawns(screenWidth, screenHeight, screen: pygame.Surface):
     pygame.init()
 
-    # sys.setrecursionlimit(4000)
-    # uzupełnić parametry
-    UCT = mcts.UCT()
-
+    UCT = mcts.UCTWins()
 
     chessTilesSprintTable = createChessboard(screenWidth, screenHeight)
 
@@ -104,11 +98,9 @@ def drawChessBoardWithPawns(screenWidth, screenHeight, screen: pygame.Surface):
     click = False
 
     chosenPawn = False
-
     clickedPawn: Pawn
 
     hasDoubleJumped = False
-
     madeAMove = False
 
     roundIndex = 0
@@ -136,24 +128,11 @@ def drawChessBoardWithPawns(screenWidth, screenHeight, screen: pygame.Surface):
                   1, 1, 1, 1, 1, 1, 2, 1,  # 48 - 55
                   1, 1, 1, 1, 1, 1, 1, 2,  # 56 - 63
                   1)
-
-            state2 = (
-                1, 1, 1, 1, 1, 1, 1, 1,  # 0 - 7
-                1, 1, 1, 1, 1, 1, 1, 1,  # 8 - 15
-                0, 0, 1, 0, 0, 0, 0, 0,  # 16 - 23
-                0, 0, 0, 0, 0, 0, 0, 0,  # 24 - 31
-                0, 0, 2, 0, 0, 0, 0, 0,  # 32 - 39
-                0, 1, 0, 1, 0, 2, 0, 2,  # 40 - 47
-                2, 1, 2, 2, 2, 2, 2, 2,  # 48 - 55
-                2, 2, 2, 2, 2, 2, 2, 2,  # 56 - 63
-                1)
-            UCT.history.append(state)
+            # UCT.history.append(state)
         #   state = UCT.to_compact_state(chessTilesSprintTable,pawnsSprintTable,roundIndex)
         #   UCT.legal_actions(state)
-            # movePlayerWithAI(pawnsSprintTable)
+            movePlayerWithAI(pawnsSprintTable, chessTilesSprintTable, (3,19))
             # UCT.next_state((0,16))
-            print(UCT.is_ended(state2))
-            print(UCT.end_values(state2))
             roundIndex += 1
 
         for pawnSprite in pawnsSprintTable:
