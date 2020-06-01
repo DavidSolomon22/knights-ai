@@ -266,20 +266,21 @@ class UCT(object):
         else:
             return None
 
-
     # TODO: update w sumie bedzie musial zostac wykonany po tym jak my zrobimy ruch (czyli przed get_action), oraz
     # TODO: po tym jak komputer zrobi ruch (czyli po get_action). Przerobic tak, zeby update juz przyjmowal
     # TODO: compact_state, bo musi tez byc wywolany po zrobieniu ruchu przez komputer (dodac update po wybraniu ruchu,
     # TODO: w funkcji run_simulation)
-    def update(self, chessTilesSprintTable: pygame.sprite.Group, pawnsSprintTable: pygame.sprite.Group,
-               roundIndex):
-        self.history.append(self.to_compact_state(chessTilesSprintTable, pawnsSprintTable, roundIndex))
+    def update(self, state):
+        self.history.append(state)
 
     # TODO
-    def get_action(self):
+    def get_action(self, chessTilesSprintTable: pygame.sprite.Group, pawnsSprintTable: pygame.sprite.Group,
+                   roundIndex):
         self.max_depth = 0
         self.data = {'C': self.C, 'max_actions': self.max_actions, 'name': self.name}
         self.stats.clear()
+
+        self.update(self.to_compact_state(chessTilesSprintTable, pawnsSprintTable, roundIndex))
 
         state = self.history[-1]
         player = self.current_player(state)
