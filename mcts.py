@@ -268,7 +268,9 @@ class UCT(object):
 
 
     # TODO: update w sumie bedzie musial zostac wykonany po tym jak my zrobimy ruch (czyli przed get_action), oraz
-    # TODO: po tym jak komputer zrobi ruch (czyli po get_action)
+    # TODO: po tym jak komputer zrobi ruch (czyli po get_action). Przerobic tak, zeby update juz przyjmowal
+    # TODO: compact_state, bo musi tez byc wywolany po zrobieniu ruchu przez komputer (dodac update po wybraniu ruchu,
+    # TODO: w funkcji run_simulation)
     def update(self, chessTilesSprintTable: pygame.sprite.Group, pawnsSprintTable: pygame.sprite.Group,
                roundIndex):
         self.history.append(self.to_compact_state(chessTilesSprintTable, pawnsSprintTable, roundIndex))
@@ -307,20 +309,11 @@ class UCT(object):
         print("Maximum depth searched:", self.max_depth)
 
         self.data['actions'] = self.calculate_action_values(self.history, player, legal)
+        action = self.data['actions'][0]['action']
         for m in self.data['actions']:
             print(self.action_template.format(**m))
 
-        # TODO: Trzeba przekminic, jak inaczej zwracac te obiekty jsonowe:
-        # TODO: czy tablice z ruchami, czy koncowy stan.
-        # TODO: Raczej bym zwracal nasz koncowy stan ktory obliczylismy (return self.history[-1]), ktory bedziemy
-        # TODO: musieli zmapowac na ruch komputera na szachownicy.
-        # return {
-        #     'type': 'action',
-        #     'message': self.board.to_json_action(self.data['actions'][0]['action']),
-        #     'extras': self.data.copy(),
-        # }
-
-        pass
+        return action
 
     def run_simulation(self):
         c, stats = self.C, self.stats
@@ -354,7 +347,7 @@ class UCT(object):
             visited_states.append(state)
             history_copy.append(state)
 
-            if self.board.is_ended(state):
+            if self.is_ended(state):
                 break
 
         end_values = self.end_values(state)
