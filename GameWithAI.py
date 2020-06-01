@@ -76,8 +76,6 @@ def movePlayerWithAI(pawnsSprintTable: pygame.sprite.Group,chessTilesSprintTable
     pawn_X_to_move = chessTilesSprintTable.sprites()[action[1]].getTileCenterXForDrawingPawn(pawnsSprintTable.sprites()[0])
     pawn_Y_to_move = chessTilesSprintTable.sprites()[action[1]].getTileCenterYForDrawingPawn(pawnsSprintTable.sprites()[0])
 
-    # print(pawnX, pawnY)
-    # print(pawn_X_to_move, pawn_Y_to_move)
     pawn_to_move = [pawn for pawn in pawnsSprintTable if (pawn.rect.x == pawnX) and (pawn.rect.y == pawnY)]
 
     if len(pawn_to_move) != 0:
@@ -118,21 +116,8 @@ def drawChessBoardWithPawns(screenWidth, screenHeight, screen: pygame.Surface):
 
         # To powinno wystarczyc do implementacji ruchu komputera
         if roundIndex % 2 == 1:
-            state = (
-                  0, 2, 0, 2, 2, 2, 2, 2,  # 0 - 7
-                  2, 2, 0, 2, 2, 2, 2, 2,  # 8 - 15
-                  0, 0, 1, 0, 0, 0, 0, 0,  # 16 - 23
-                  0, 0, 0, 0, 0, 0, 0, 0,  # 24 - 31
-                  0, 0, 1, 0, 0, 0, 0, 0,  # 32 - 39
-                  0, 1, 0, 1, 0, 2, 0, 0,  # 40 - 47
-                  1, 1, 1, 1, 1, 1, 2, 1,  # 48 - 55
-                  1, 1, 1, 1, 1, 1, 1, 2,  # 56 - 63
-                  1)
-            # UCT.history.append(state)
-        #   state = UCT.to_compact_state(chessTilesSprintTable,pawnsSprintTable,roundIndex)
-        #   UCT.legal_actions(state)
-            movePlayerWithAI(pawnsSprintTable, chessTilesSprintTable, (3,19))
-            # UCT.next_state((0,16))
+            action = UCT.get_action(chessTilesSprintTable,pawnsSprintTable,roundIndex)
+            movePlayerWithAI(pawnsSprintTable, chessTilesSprintTable, action)
             roundIndex += 1
 
         for pawnSprite in pawnsSprintTable:
