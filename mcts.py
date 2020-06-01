@@ -199,36 +199,21 @@ class UCT(object):
         if (state[action[0]] == 0) or (state[action[1]] != 0):
             return None
 
-        # print(state)
-
         state_as_list = list(state)
 
         if state_as_list[64] == 2:
             state_as_list[action[0]] = 0
             state_as_list[action[1]] = 2
+            state_as_list[-1] = 1
 
         elif state_as_list[64] == 1:
             state_as_list[action[0]] = 0
             state_as_list[action[1]] = 1
-
-        # print(next_state)
+            state_as_list[-1] = 2
 
         next_state = tuple(state_as_list)
 
         return next_state
-
-        # state = history[-1]
-        # przykladowa zwrocona wartosc przy inpucie (state, action = (48, 40)) wygladajacym jak w powyzszej funkcji
-        # return (2, 2, 2, 2, 2, 2, 2, 2,
-        #         2, 2, 2, 2, 2, 2, 2, 2,
-        #         0, 0, 0, 0, 0, 0, 0, 0,
-        #         0, 0, 0, 0, 0, 0, 0, 0,
-        #         0, 0, 0, 0, 0, 0, 0, 0,
-        #         1, 0, 0, 0, 0, 0, 0, 0,  # 40 - 47
-        #         0, 1, 1, 1, 1, 1, 1, 1,  # 48 - 55
-        #         1, 1, 1, 1, 1, 1, 1, 1,  # 56 - 63
-        #         2)  # to bedzie oznaczac gracza ktorego jest ruch w tym stanie (1, 2)
-        # pass
 
     def current_player(self, state):
         return state[-1]
@@ -338,8 +323,13 @@ class UCT(object):
                 ]
                 max_value = max(v for _, _, v in values_actions)
                 actions_states = [(a, S) for a, S, v in values_actions if v == max_value]
-
-            action, state = choice(actions_states)
+            try:
+                action, state = choice(actions_states)
+            except:
+                print("\n\n\n\n\nAn exception occurred\n\n\n\n\n")
+                print(actions_states)
+                print(action)
+                print(state)
             visited_states.append(state)
             history_copy.append(state)
 
@@ -348,11 +338,14 @@ class UCT(object):
 
         end_values = self.end_values(state)
         for state in visited_states:
-            if state not in stats:
-                continue
-            S = stats[state]
-            S.visits += 1
-            S.value += end_values[self.previous_player(state)]
+            try:
+                if state not in stats:
+                    continue
+                S = stats[state]
+                S.visits += 1
+                S.value += end_values[self.previous_player(state)]
+            except:
+                print(S)
 
 
 class UCTWins(UCT):
