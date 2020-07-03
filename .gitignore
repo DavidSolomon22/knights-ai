@@ -133,3 +133,4 @@ pip-selfcheck.json
 ## File-based project format:
 *.iws
 
+.DS_Store
