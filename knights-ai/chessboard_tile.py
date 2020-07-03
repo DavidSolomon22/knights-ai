@@ -1,5 +1,4 @@
 import pygame
-import Pawn
 
 
 class ChessBoardTile(pygame.sprite.Sprite):

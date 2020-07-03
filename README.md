@@ -57,9 +57,13 @@ source venv/bin/activate
 ```sh
 pip install -r requirements.txt
 ```
-5. Run program
+5. Go inside working directory
 ```sh
-python3 Main.py
+cd knights-ai
+```
+6. Run program
+```sh
+python3 main.py
 ```
 
 

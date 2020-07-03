@@ -6,12 +6,12 @@ class Pawn(pygame.sprite.Sprite):
         super().__init__()
 
         if image == "white":
-            self.defaultPawnImage = pygame.image.load('Resources/whitePawn.png')
-            self.chosenPawnImage = pygame.image.load('Resources/chosenPawn.png')
+            self.defaultPawnImage = pygame.image.load('resources/white_pawn.png')
+            self.chosenPawnImage = pygame.image.load('resources/chosen_pawn.png')
             self.color = image
         else:
-            self.defaultPawnImage = pygame.image.load('Resources/blackPawn.png')
-            self.chosenPawnImage = pygame.image.load('Resources/chosenPawn.png')
+            self.defaultPawnImage = pygame.image.load('resources/black_pawn.png')
+            self.chosenPawnImage = pygame.image.load('resources/chosen_pawn.png')
             self.color = image
         self.image = self.defaultPawnImage
 
