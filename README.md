@@ -1,12 +1,17 @@
 # Knights AI
 
+## Overview
+
+Some Overview
 
 <!-- TABLE OF CONTENTS -->
 ## Table of Contents
 
 - [Knights AI](#knights-ai)
+  - [Overview](#overview)
   - [Table of Contents](#table-of-contents)
   - [About The Project](#about-the-project)
+    - [Description](#description)
     - [Built With](#built-with)
   - [Getting Started](#getting-started)
     - [Prerequisites](#prerequisites)
@@ -24,9 +29,9 @@
 
 ![Main Screen Shot][main-screenshot]
 
+### Description
+
 Some info about project
-
-
 ### Built With
 
 * [Pygame](https://www.pygame.org/)
