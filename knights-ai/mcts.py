@@ -32,9 +32,9 @@ class UCT(object):
         boardList = []
 
         for tile in chessTilesSprintTable:
-            if tile.checkState(pawnsSprintTable) == 1:
+            if tile.check_state(pawnsSprintTable) == 1:
                 boardList.append(1)
-            elif tile.checkState(pawnsSprintTable) == 2:
+            elif tile.check_state(pawnsSprintTable) == 2:
                 boardList.append(2)
             else:
                 boardList.append(0)
@@ -130,9 +130,7 @@ class UCT(object):
             pass
 
     def legal_actions(self, state):
-
         legal_actions_list = []
-
         if state[64] == 2:
             for index, pawn in enumerate(state[:64]):
                 if pawn == 2:
@@ -161,30 +159,22 @@ class UCT(object):
                             legal_actions_list.append((index, index - 8))
 
                     self.check_possible_multiple_jumps_for_white_pawns(legal_actions_list, index, state, index, index)
-
         return legal_actions_list
 
     def next_state(self, history, action):
-
         state = history[-1]
-
         if (state[action[0]] == 0) or (state[action[1]] != 0):
             return None
-
         state_as_list = list(state)
-
         if state_as_list[64] == 2:
             state_as_list[action[0]] = 0
             state_as_list[action[1]] = 2
             state_as_list[-1] = 1
-
         elif state_as_list[64] == 1:
             state_as_list[action[0]] = 0
             state_as_list[action[1]] = 1
             state_as_list[-1] = 2
-
         next_state = tuple(state_as_list)
-
         return next_state
 
     def current_player(self, state):
@@ -194,7 +184,6 @@ class UCT(object):
         return 3 - state[-1]
 
     def is_ended(self, state):
-
         winning_position_for_white = state[:16]
         winning_position_for_black = state[48:64]
 
@@ -207,7 +196,6 @@ class UCT(object):
             return True
 
     def end_values(self, state):
-
         winning_position_for_white = state[:16]
         winning_position_for_black = state[48:64]
 

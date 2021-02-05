@@ -14,31 +14,27 @@ class Pawn(pygame.sprite.Sprite):
             self.chosenPawnImage = pygame.image.load('resources/chosen_pawn.png')
             self.color = image
         self.image = self.defaultPawnImage
-
         self.rect = self.image.get_rect()
 
-        # self.rect.x
-        # self.rect.y
-
-    def setPawnPosition(self, mx, my):
+    def set_pawn_position(self, mx, my):
         self.rect.x = mx
         self.rect.y = my
 
-    def PawnSelected(self):
+    def pawn_selected(self):
         self.image = self.chosenPawnImage
 
-    def PawnUnselected(self):
+    def pawn_unselected(self):
         self.image = self.defaultPawnImage
 
-    def getTileCenterX(self):
+    def get_tile_center_x(self):
         return int(self.rect.x + (self.image.get_width()) / 2)
 
-    def getTileCenterY(self):
+    def get_tile_center_y(self):
         return int(self.rect.y + (self.image.get_height()) / 2)
 
-    def checkIfPawnIsMovingToTheNearestTile(self, newPawnTile: pygame.sprite.Sprite):
-        distanceX = abs(newPawnTile.getTileCenterX() - self.getTileCenterX())
-        distanceY = abs(newPawnTile.getTileCenterY() - self.getTileCenterY())
+    def check_if_pawn_is_moving_to_the_nearest_tile(self, newPawnTile: pygame.sprite.Sprite):
+        distanceX = abs(newPawnTile.get_tile_center_x() - self.get_tile_center_x())
+        distanceY = abs(newPawnTile.get_tile_center_y() - self.get_tile_center_y())
 
         if (distanceX == newPawnTile.image.get_width()) ^ (distanceY == newPawnTile.image.get_height()):
             if (distanceX > newPawnTile.image.get_width()) or (distanceY > newPawnTile.image.get_height()):
@@ -47,9 +43,9 @@ class Pawn(pygame.sprite.Sprite):
         else:
             return False
 
-    def checkIfPawnIsJumpingOver(self, newPawnTile: pygame.sprite.Sprite):
-        distanceX = abs(newPawnTile.getTileCenterX() - self.getTileCenterX())
-        distanceY = abs(newPawnTile.getTileCenterY() - self.getTileCenterY())
+    def check_if_pawn_is_jumping_over(self, newPawnTile: pygame.sprite.Sprite):
+        distanceX = abs(newPawnTile.get_tile_center_x() - self.get_tile_center_x())
+        distanceY = abs(newPawnTile.get_tile_center_y() - self.get_tile_center_y())
 
         if (distanceX == (newPawnTile.image.get_width() * 2)) ^ (distanceY == (newPawnTile.image.get_height() * 2)):
             if (distanceX == newPawnTile.image.get_width()) or (distanceY == newPawnTile.image.get_height()):
@@ -58,58 +54,58 @@ class Pawn(pygame.sprite.Sprite):
         else:
             return False
 
-    def doubleJump(self, newPawnTile: pygame.sprite.Sprite, pawnsSprintTable: pygame.sprite.Group):
-        distanceX = newPawnTile.getTileCenterX() - self.getTileCenterX()
-        distanceY = newPawnTile.getTileCenterY() - self.getTileCenterY()
+    def double_jump(self, newPawnTile: pygame.sprite.Sprite, pawnsSprintTable: pygame.sprite.Group):
+        distanceX = newPawnTile.get_tile_center_x() - self.get_tile_center_x()
+        distanceY = newPawnTile.get_tile_center_y() - self.get_tile_center_y()
 
         if distanceX != 0:
             if distanceX > 0:
-                pawnInBettwenX = newPawnTile.getTileCenterXForDrawingPawn(self) - newPawnTile.image.get_width()
+                pawnInBettwenX = newPawnTile.get_tile_center_x_for_drawing_pawn(self) - newPawnTile.image.get_width()
                 for pawn in pawnsSprintTable:
                     if pawn.rect.x == pawnInBettwenX and pawn.rect.y == self.rect.y:
                         return True
             else:
-                pawnInBettwenX = newPawnTile.getTileCenterXForDrawingPawn(self) + newPawnTile.image.get_width()
+                pawnInBettwenX = newPawnTile.get_tile_center_x_for_drawing_pawn(self) + newPawnTile.image.get_width()
                 for pawn in pawnsSprintTable:
                     if pawn.rect.x == pawnInBettwenX and pawn.rect.y == self.rect.y:
                         return True
         else:
             if distanceY > 0:
-                pawnInBettwenY = newPawnTile.getTileCenterYForDrawingPawn(self) - newPawnTile.image.get_height()
+                pawnInBettwenY = newPawnTile.get_tile_center_y_for_drawing_pawn(self) - newPawnTile.image.get_height()
                 for pawn in pawnsSprintTable:
                     if pawn.rect.y == pawnInBettwenY and pawn.rect.x == self.rect.x:
                         return True
             else:
-                pawnInBettwenY = newPawnTile.getTileCenterYForDrawingPawn(self) + newPawnTile.image.get_height()
+                pawnInBettwenY = newPawnTile.get_tile_center_y_for_drawing_pawn(self) + newPawnTile.image.get_height()
                 for pawn in pawnsSprintTable:
                     if pawn.rect.y == pawnInBettwenY and pawn.rect.x == self.rect.x:
                         return True
 
-    def movePawn(self, mx, my, chessTilesSprintTable: pygame.sprite.Group, pawnsSprintTable: pygame.sprite.Group,
-                 hasDoubleJumped, madeAMove):
+    def move_pawn(self, mx, my, chessTilesSprintTable: pygame.sprite.Group, pawnsSprintTable: pygame.sprite.Group,
+                 hasdouble_jumped, madeAMove):
 
         for tileSprite in chessTilesSprintTable:
             if tileSprite.rect.collidepoint((mx, my)):
-                if self.checkIfPawnIsMovingToTheNearestTile(tileSprite):
+                if self.check_if_pawn_is_moving_to_the_nearest_tile(tileSprite):
                     if not madeAMove:
-                        if tileSprite.checkIfContainsPawn(pawnsSprintTable):
-                            self.setPawnPosition(tileSprite.getTileCenterXForDrawingPawn(self),
-                                                 tileSprite.getTileCenterYForDrawingPawn(self))
+                        if tileSprite.check_if_contains_pawn(pawnsSprintTable):
+                            self.set_pawn_position(tileSprite.get_tile_center_x_for_drawing_pawn(self),
+                                                 tileSprite.get_tile_center_y_for_drawing_pawn(self))
                             return False, True
                         else:
                             return False, False
-                    elif hasDoubleJumped:
+                    elif hasdouble_jumped:
                         return True, True
                     else:
                         return False, True
                 else:
-                    if self.checkIfPawnIsJumpingOver(tileSprite):
-                        if not hasDoubleJumped:
+                    if self.check_if_pawn_is_jumping_over(tileSprite):
+                        if not hasdouble_jumped:
                             if not madeAMove:
-                                if tileSprite.checkIfContainsPawn(pawnsSprintTable):
-                                    if self.doubleJump(tileSprite, pawnsSprintTable):
-                                        self.setPawnPosition(tileSprite.getTileCenterXForDrawingPawn(self),
-                                                             tileSprite.getTileCenterYForDrawingPawn(self))
+                                if tileSprite.check_if_contains_pawn(pawnsSprintTable):
+                                    if self.double_jump(tileSprite, pawnsSprintTable):
+                                        self.set_pawn_position(tileSprite.get_tile_center_x_for_drawing_pawn(self),
+                                                             tileSprite.get_tile_center_y_for_drawing_pawn(self))
                                         return True, True
                                     else:
                                         return False, False
@@ -118,10 +114,10 @@ class Pawn(pygame.sprite.Sprite):
                             else:
                                 return False, True
                         else:
-                            if tileSprite.checkIfContainsPawn(pawnsSprintTable):
-                                if self.doubleJump(tileSprite, pawnsSprintTable):
-                                    self.setPawnPosition(tileSprite.getTileCenterXForDrawingPawn(self),
-                                                         tileSprite.getTileCenterYForDrawingPawn(self))
+                            if tileSprite.check_if_contains_pawn(pawnsSprintTable):
+                                if self.double_jump(tileSprite, pawnsSprintTable):
+                                    self.set_pawn_position(tileSprite.get_tile_center_x_for_drawing_pawn(self),
+                                                         tileSprite.get_tile_center_y_for_drawing_pawn(self))
                                     return True, True
                                 else:
                                     return True, True
@@ -133,7 +129,7 @@ class Pawn(pygame.sprite.Sprite):
                         else:
                             return False, False
         if madeAMove:
-            if hasDoubleJumped:
+            if hasdouble_jumped:
                 return True, True
             else:
                 return False, True

@@ -4,7 +4,7 @@ import chessboard_tile
 import time
 
 
-def createChessboard(width, height):
+def create_chessboard(width, height):
     whiteTileColor = (232, 235, 239)
     darkTileColor = (125, 135, 150)
 
@@ -17,19 +17,19 @@ def createChessboard(width, height):
         for y in range(8):
             if tileColorIndex == 0:
                 tile = chessboard_tile.ChessBoardTile(whiteTileColor, tileSize, tileSize)
-                tile.setTilePosition((y * tileSize + (width - height) / 2), (x * tileSize))
+                tile.set_tile_position((y * tileSize + (width - height) / 2), (x * tileSize))
                 spriteList.add(tile)
                 tileColorIndex = (tileColorIndex + 1) % 2
             else:
                 tile = chessboard_tile.ChessBoardTile(darkTileColor, tileSize, tileSize)
-                tile.setTilePosition((y * tileSize + (width - height) / 2), (x * tileSize))
+                tile.set_tile_position((y * tileSize + (width - height) / 2), (x * tileSize))
                 spriteList.add(tile)
                 tileColorIndex = (tileColorIndex + 1) % 2
 
     return spriteList
 
 
-def createPawnsOnChessboard(chessTilesSprintTable: pygame.sprite.Group):
+def create_pawns_on_chessboard(chessTilesSprintTable: pygame.sprite.Group):
     pawnsSprintTable = pygame.sprite.Group()
 
     for index, tile in enumerate(chessTilesSprintTable):
@@ -37,12 +37,12 @@ def createPawnsOnChessboard(chessTilesSprintTable: pygame.sprite.Group):
         if index <= 15:
             pawn_var = pawn.Pawn('black')
             pawnsSprintTable.add(pawn_var)
-            pawn_var.setPawnPosition(tile.rect.x + (tileSize - pawn_var.image.get_width()) / 2,
+            pawn_var.set_pawn_position(tile.rect.x + (tileSize - pawn_var.image.get_width()) / 2,
                                  tile.rect.y + (tileSize - pawn_var.image.get_width()) / 2)
         elif index >= 48:
             pawn_var = pawn.Pawn('white')
             pawnsSprintTable.add(pawn_var)
-            pawn_var.setPawnPosition(tile.rect.x + (tileSize - pawn_var.image.get_width()) / 2,
+            pawn_var.set_pawn_position(tile.rect.x + (tileSize - pawn_var.image.get_width()) / 2,
                                  tile.rect.y + (tileSize - pawn_var.image.get_width()) / 2)
 
     return pawnsSprintTable
@@ -57,7 +57,7 @@ def draw_text(text, font, fontSize, color, surface, x, y):
     return textrect
 
 
-def displayPlayerName(roundIndex, screen: pygame.Surface):
+def display_player_name(roundIndex, screen: pygame.Surface):
     if roundIndex % 2 == 0:
         playerText1 = draw_text('Player 1', 'game_title_font.ttf', 20, (255, 255, 255), screen, 0, 560)
         return playerText1
@@ -66,12 +66,12 @@ def displayPlayerName(roundIndex, screen: pygame.Surface):
         return playerText2
 
 
-def drawChessBoardWithPawns(screenWidth, screenHeight, screen: pygame.Surface):
+def draw_chess_board_with_pawns(screenWidth, screenHeight, screen: pygame.Surface):
     pygame.init()
 
-    chessTilesSprintTable = createChessboard(screenWidth, screenHeight)
+    chessTilesSprintTable = create_chessboard(screenWidth, screenHeight)
 
-    pawnsSprintTable = createPawnsOnChessboard(chessTilesSprintTable)
+    pawnsSprintTable = create_pawns_on_chessboard(chessTilesSprintTable)
 
     gameRunning = True
 
@@ -81,7 +81,7 @@ def drawChessBoardWithPawns(screenWidth, screenHeight, screen: pygame.Surface):
 
     clickedPawn: pawn
 
-    hasDoubleJumped = False
+    hasdouble_jumped = False
 
     madeAMove = False
 
@@ -105,21 +105,21 @@ def drawChessBoardWithPawns(screenWidth, screenHeight, screen: pygame.Surface):
                         if pawnSprite.color == 'white':
                             chosenPawn = True
                             clickedPawn = pawnSprite
-                            clickedPawn.PawnSelected()
+                            clickedPawn.pawn_selected()
                     else:
                         if pawnSprite.color == 'black':
                             chosenPawn = True
                             clickedPawn = pawnSprite
-                            clickedPawn.PawnSelected()
+                            clickedPawn.pawn_selected()
 
-        displayPlayerName(roundIndex, screen)
+        display_player_name(roundIndex, screen)
 
         if click:
             if finishButton.collidepoint((mx, my)):
                 if madeAMove:
                     if clickedPawn != None:
-                        clickedPawn.PawnUnselected()
-                    hasDoubleJumped = False
+                        clickedPawn.pawn_unselected()
+                    hasdouble_jumped = False
                     madeAMove = False
                     roundIndex += 1
 
@@ -135,23 +135,21 @@ def drawChessBoardWithPawns(screenWidth, screenHeight, screen: pygame.Surface):
                 if event.button == 1:
                     click = True
                     if click and chosenPawn:
-                        hasDoubleJumped, madeAMove = clickedPawn.movePawn(mx, my, chessTilesSprintTable,
-                                                                          pawnsSprintTable, hasDoubleJumped, madeAMove)
-                        clickedPawn.PawnUnselected()
+                        hasdouble_jumped, madeAMove = clickedPawn.move_pawn(mx, my, chessTilesSprintTable,
+                                                                          pawnsSprintTable, hasdouble_jumped, madeAMove)
+                        clickedPawn.pawn_unselected()
                         chosenPawn = False
                         clickedPawn = None
                         click = False
                 elif event.button == 3:
                     chosenPawn = False
                     if clickedPawn != None:
-                        clickedPawn.PawnUnselected()
+                        clickedPawn.pawn_unselected()
                     clickedPawn = None
                     click = False
 
         chessTilesSprintTable.draw(screen)
 
-
-        #display winner
         for sprite in pawnsSprintTable:
             if sprite.color == 'white':
                 if len(whitePawnAtEnd) == 16:

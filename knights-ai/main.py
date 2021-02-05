@@ -39,10 +39,10 @@ def main_menu():
 
         if menuPlay.collidepoint((mx, my)):
             if click:
-                game.drawChessBoardWithPawns(800, 600, screen)
+                game.draw_chess_board_with_pawns(800, 600, screen)
         if menuPlayWithAI.collidepoint((mx, my)):
             if click:
-                game_with_ai.drawChessBoardWithPawns(800, 600, screen)
+                game_with_ai.draw_chess_board_with_pawns(800, 600, screen)
         if menuExit.collidepoint((mx, my)):
             if click:
                 pygame.quit()

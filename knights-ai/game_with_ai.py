@@ -4,7 +4,7 @@ import chessboard_tile
 import time
 import mcts
 
-def createChessboard(width, height):
+def create_chessboard(width, height):
     whiteTileColor = (232, 235, 239)
     darkTileColor = (125, 135, 150)
 
@@ -17,19 +17,19 @@ def createChessboard(width, height):
         for y in range(8):
             if tileColorIndex == 0:
                 tile = chessboard_tile.ChessBoardTile(whiteTileColor, tileSize, tileSize)
-                tile.setTilePosition((y * tileSize + (width - height) / 2), (x * tileSize))
+                tile.set_tile_position((y * tileSize + (width - height) / 2), (x * tileSize))
                 spriteList.add(tile)
                 tileColorIndex = (tileColorIndex + 1) % 2
             else:
                 tile = chessboard_tile.ChessBoardTile(darkTileColor, tileSize, tileSize)
-                tile.setTilePosition((y * tileSize + (width - height) / 2), (x * tileSize))
+                tile.set_tile_position((y * tileSize + (width - height) / 2), (x * tileSize))
                 spriteList.add(tile)
                 tileColorIndex = (tileColorIndex + 1) % 2
 
     return spriteList
 
 
-def createPawnsOnChessboard(chessTilesSprintTable: pygame.sprite.Group):
+def create_pawns_on_chessboard(chessTilesSprintTable: pygame.sprite.Group):
     pawnsSprintTable = pygame.sprite.Group()
 
     for index, tile in enumerate(chessTilesSprintTable):
@@ -37,12 +37,12 @@ def createPawnsOnChessboard(chessTilesSprintTable: pygame.sprite.Group):
         if index <= 15:
             pawn_var = pawn.Pawn('black')
             pawnsSprintTable.add(pawn_var)
-            pawn_var.setPawnPosition(tile.rect.x + (tileSize - pawn_var.image.get_width()) / 2,
+            pawn_var.set_pawn_position(tile.rect.x + (tileSize - pawn_var.image.get_width()) / 2,
                                  tile.rect.y + (tileSize - pawn_var.image.get_width()) / 2)
         elif index >= 48:
             pawn_var = pawn.Pawn('white')
             pawnsSprintTable.add(pawn_var)
-            pawn_var.setPawnPosition(tile.rect.x + (tileSize - pawn_var.image.get_width()) / 2,
+            pawn_var.set_pawn_position(tile.rect.x + (tileSize - pawn_var.image.get_width()) / 2,
                                  tile.rect.y + (tileSize - pawn_var.image.get_width()) / 2)
 
     return pawnsSprintTable
@@ -57,7 +57,7 @@ def draw_text(text, font, fontSize, color, surface, x, y):
     return textrect
 
 
-def displayPlayerName(roundIndex, screen: pygame.Surface):
+def display_player_name(roundIndex, screen: pygame.Surface):
     if roundIndex % 2 == 0:
         playerText1 = draw_text('Player 1', 'game_title_font.ttf', 20, (255, 255, 255), screen, 0, 560)
         return playerText1
@@ -65,29 +65,27 @@ def displayPlayerName(roundIndex, screen: pygame.Surface):
         playerText2 = draw_text('Player 2', 'game_title_font.ttf', 20, (255, 255, 255), screen, 0, 0)
         return playerText2
 
-def movePlayerWithAI(pawnsSprintTable: pygame.sprite.Group,chessTilesSprintTable: pygame.sprite.Group, action):
+def move_player_with_ai(pawnsSprintTable: pygame.sprite.Group,chessTilesSprintTable: pygame.sprite.Group, action):
+    pawnX = chessTilesSprintTable.sprites()[action[0]].get_tile_center_x_for_drawing_pawn(pawnsSprintTable.sprites()[0])
+    pawnY = chessTilesSprintTable.sprites()[action[0]].get_tile_center_y_for_drawing_pawn(pawnsSprintTable.sprites()[0])
 
-
-    pawnX = chessTilesSprintTable.sprites()[action[0]].getTileCenterXForDrawingPawn(pawnsSprintTable.sprites()[0])
-    pawnY = chessTilesSprintTable.sprites()[action[0]].getTileCenterYForDrawingPawn(pawnsSprintTable.sprites()[0])
-
-    pawn_X_to_move = chessTilesSprintTable.sprites()[action[1]].getTileCenterXForDrawingPawn(pawnsSprintTable.sprites()[0])
-    pawn_Y_to_move = chessTilesSprintTable.sprites()[action[1]].getTileCenterYForDrawingPawn(pawnsSprintTable.sprites()[0])
+    pawn_X_to_move = chessTilesSprintTable.sprites()[action[1]].get_tile_center_x_for_drawing_pawn(pawnsSprintTable.sprites()[0])
+    pawn_Y_to_move = chessTilesSprintTable.sprites()[action[1]].get_tile_center_y_for_drawing_pawn(pawnsSprintTable.sprites()[0])
 
     pawn_to_move = [pawn for pawn in pawnsSprintTable if (pawn.rect.x == pawnX) and (pawn.rect.y == pawnY)]
 
     if len(pawn_to_move) != 0:
-        pawn_to_move[0].setPawnPosition(pawn_X_to_move,pawn_Y_to_move)
+        pawn_to_move[0].set_pawn_position(pawn_X_to_move,pawn_Y_to_move)
 
 
-def drawChessBoardWithPawns(screenWidth, screenHeight, screen: pygame.Surface):
+def draw_chess_board_with_pawns(screenWidth, screenHeight, screen: pygame.Surface):
     pygame.init()
 
     UCT = mcts.UCTWins()
 
-    chessTilesSprintTable = createChessboard(screenWidth, screenHeight)
+    chessTilesSprintTable = create_chessboard(screenWidth, screenHeight)
 
-    pawnsSprintTable = createPawnsOnChessboard(chessTilesSprintTable)
+    pawnsSprintTable = create_pawns_on_chessboard(chessTilesSprintTable)
 
     gameRunning = True
 
@@ -96,7 +94,7 @@ def drawChessBoardWithPawns(screenWidth, screenHeight, screen: pygame.Surface):
     chosenPawn = False
     clickedPawn: pawn
 
-    hasDoubleJumped = False
+    hasdouble_jumped = False
     madeAMove = False
 
     roundIndex = 0
@@ -112,10 +110,9 @@ def drawChessBoardWithPawns(screenWidth, screenHeight, screen: pygame.Surface):
 
         mx, my = pygame.mouse.get_pos()
 
-        # To powinno wystarczyc do implementacji ruchu komputera
         if roundIndex % 2 == 1:
             action = UCT.get_action(chessTilesSprintTable,pawnsSprintTable,roundIndex)
-            movePlayerWithAI(pawnsSprintTable, chessTilesSprintTable, action)
+            move_player_with_ai(pawnsSprintTable, chessTilesSprintTable, action)
             roundIndex += 1
 
         for pawnSprite in pawnsSprintTable:
@@ -125,16 +122,16 @@ def drawChessBoardWithPawns(screenWidth, screenHeight, screen: pygame.Surface):
                         if pawnSprite.color == 'white':
                             chosenPawn = True
                             clickedPawn = pawnSprite
-                            clickedPawn.PawnSelected()
+                            clickedPawn.pawn_selected()
 
-        displayPlayerName(roundIndex, screen)
+        display_player_name(roundIndex, screen)
 
         if click:
             if finishButton.collidepoint((mx, my)):
                 if madeAMove:
                     if clickedPawn != None:
-                        clickedPawn.PawnUnselected()
-                    hasDoubleJumped = False
+                        clickedPawn.pawn_unselected()
+                    hasdouble_jumped = False
                     madeAMove = False
                     roundIndex += 1
 
@@ -150,20 +147,19 @@ def drawChessBoardWithPawns(screenWidth, screenHeight, screen: pygame.Surface):
                 if event.button == 1:
                     click = True
                     if click and chosenPawn:
-                        hasDoubleJumped, madeAMove = clickedPawn.movePawn(mx, my, chessTilesSprintTable,
-                                                                          pawnsSprintTable, hasDoubleJumped, madeAMove)
-                        clickedPawn.PawnUnselected()
+                        hasdouble_jumped, madeAMove = clickedPawn.move_pawn(mx, my, chessTilesSprintTable,
+                                                                          pawnsSprintTable, hasdouble_jumped, madeAMove)
+                        clickedPawn.pawn_unselected()
                         chosenPawn = False
                         clickedPawn = None
                         click = False
                 elif event.button == 3:
                     chosenPawn = False
                     if clickedPawn != None:
-                        clickedPawn.PawnUnselected()
+                        clickedPawn.pawn_unselected()
                     clickedPawn = None
                     click = False
 
-        #display winner
         for sprite in pawnsSprintTable:
             if sprite.color == 'white':
                 if len(whitePawnAtEnd) == 16:
