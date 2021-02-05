@@ -4,17 +4,19 @@
 <!-- TABLE OF CONTENTS -->
 ## Table of Contents
 
-* [About the Project](#about-the-project)
-  * [Built With](#built-with)
-* [Getting Started](#getting-started)
-  * [Prerequisites](#prerequisites)
-  * [Installation](#installation)
-* [Usage](#usage)
-* [Roadmap](#roadmap)
-* [Contributing](#contributing)
-* [License](#license)
-* [Contact](#contact)
-* [Acknowledgements](#acknowledgements)
+- [Knights AI](#knights-ai)
+  - [Table of Contents](#table-of-contents)
+  - [About The Project](#about-the-project)
+    - [Built With](#built-with)
+  - [Getting Started](#getting-started)
+    - [Prerequisites](#prerequisites)
+    - [Installation](#installation)
+  - [Usage](#usage)
+  - [Roadmap](#roadmap)
+  - [Contributing](#contributing)
+  - [License](#license)
+  - [Contact](#contact)
+  - [Acknowledgements](#acknowledgements)
 
 
 <!-- ABOUT THE PROJECT -->
@@ -111,6 +113,6 @@ David Solomon - via [Linkedin](https://www.linkedin.com/in/david-solomon-1073051
 
 
 <!-- MARKDOWN LINKS & IMAGES -->
-[main-screenshot]: images/main.png
-[start-screenshot]: images/start.png
-[in-game-screenshot]: images/in-game.png
+[main-screenshot]: docs/main.png
+[start-screenshot]: docs/start.png
+[in-game-screenshot]: docs/in-game.png
