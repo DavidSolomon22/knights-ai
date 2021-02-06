@@ -2,7 +2,7 @@
 
 ## Overview
 
-Some Overview
+Knights game with the possibility of playing with artificial intelligence, based on the Monte Carlo Tree Search algorithm. 🏆
 
 <!-- TABLE OF CONTENTS -->
 ## Table of Contents
@@ -12,6 +12,8 @@ Some Overview
   - [Table of Contents](#table-of-contents)
   - [About The Project](#about-the-project)
     - [Description](#description)
+      - [Rules](#rules)
+      - [Algorithm](#algorithm)
     - [Built With](#built-with)
   - [Getting Started](#getting-started)
     - [Prerequisites](#prerequisites)
@@ -31,7 +33,12 @@ Some Overview
 
 ### Description
 
-Some info about project
+#### Rules
+Knights game is played on an 8x8 board. Each of the two players has 16 knights. Each of them can move one square in any direction. They can also jump over several other knights in one move (like in draughts). The goal of the game is to put all of the knights at the end of the board.
+
+#### Algorithm
+Monte Carlo Tree Search (MCTS) is one of the best algorithms for board game engines. It uses much less resources than classical versions of tree search algorithms. MCTS keeps perfect balance between exploration and exploitation of the tree. The implementation of this algorithm is based on the implementation of Mr. Jeff Brady. Big credits for him!
+
 ### Built With
 
 * [Pygame](https://www.pygame.org/)
