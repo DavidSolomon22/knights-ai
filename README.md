@@ -37,7 +37,7 @@ Knights game with the possibility of playing with artificial intelligence, based
 Knights game is played on an 8x8 board. Each of the two players has 16 knights. Each of those pieces can move one square in any direction. They can also jump over several other knights in one move (like in draughts). The goal of the game is to put all of the knights at the end of the board.
 
 #### Algorithm
-*Monte Carlo Tree Search* (*MCTS*) is one of the best algorithms for board game engines. It uses much less resources than classical versions of tree search algorithms. *MCTS* keeps perfect balance between exploration and exploitation of the tree. The implementation of this algorithm is based on the implementation of Mr. Jeff Brady. Big credits for him!
+[*Monte Carlo Tree Search*](https://en.wikipedia.org/wiki/Monte_Carlo_tree_search) (*MCTS*) is one of the best algorithms for board game engines. It uses much less resources than classical versions of tree search algorithms. *MCTS* keeps perfect balance between exploration and exploitation of the tree. The implementation of this algorithm is based on the implementation of Mr. Jeff Brady. Big credits for him!
 
 ### Built With
 
